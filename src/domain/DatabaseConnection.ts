@@ -13,7 +13,7 @@ export interface DatabaseConnection {
 
 export interface BaseCredentials {
     host: string,
-    port: string
+    port: number
     userCredentials: UserCredentials
 }
 
@@ -35,7 +35,7 @@ export interface DatabaseConnectionV2 {
 export const emptyDatabaseConnection: DatabaseConnectionV2 = {
     baseCredentials: {
         host: '',
-        port: '',
+        port: 0,
         userCredentials: {
             user: '',
             password: ''

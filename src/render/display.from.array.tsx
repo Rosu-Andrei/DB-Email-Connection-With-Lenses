@@ -13,10 +13,13 @@ export const arrayToObj = <Main extends any>(list: any[], obj: Main, setObj: (ma
             let renderer: RenderDef;
             if (type === 'string') {
                 renderer = "text";
+            } else if (type === 'number') {
+                renderer = "number";
+            } else if (type === 'password') {
+                renderer = "password";
             } else if (type.startsWith('options:')) {
-
                 const options = type.replace('options:', '').split(',');
-                renderer = {type: "dropdown", options};
+                renderer = { type: "dropdown", options };
             } else {
                 throw new Error(`Invalid type ${type}`);
             }

@@ -5,7 +5,7 @@ export interface EmailConnectionV2 {
 
 export interface SMTPSettings {
     host: string;
-    port: string;
+    port: number;
     userCredentials: UserCredentials;
     secure: string;
 }

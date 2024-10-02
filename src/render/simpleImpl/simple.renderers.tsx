@@ -27,10 +27,46 @@ export const renderStringInput: FieldRenderer = <T,>(
     fieldInputs: fieldInputs<T>
 ) => {
     const { id, value, onChange } = fieldInputs;
-    const inputValue = value[id as keyof typeof value] || '';
     return (
         <input
             type="text"
+            id={id as string}
+            name={id as string}
+            value={value[id] as string}
+            onChange={onChange}
+        />
+    );
+};
+
+/**
+ * An implementation of FieldRenderer that renders a number input
+ */
+export const renderNumberInput: FieldRenderer = <T,>(
+    fieldInputs: fieldInputs<T>
+) => {
+    const { id, value, onChange } = fieldInputs;
+    return (
+        <input
+            type="number"
+            id={id as string}
+            name={id as string}
+            value={value[id] as string}
+            onChange={onChange}
+        />
+    );
+};
+
+/**
+ * An implementation of FieldRenderer that renders a password input
+ */
+
+export const renderPasswordInput: FieldRenderer = <T,>(
+    fieldInputs: fieldInputs<T>
+) => {
+    const { id, value, onChange } = fieldInputs;
+    return (
+        <input
+            type="password"
             id={id as string}
             name={id as string}
             value={value[id] as string}
@@ -69,6 +105,8 @@ export const renderDropDown = (options: string[]): FieldRenderer => <T, >(
  */
 export type RenderDef =
     | "text"
+    | "number"
+    | "password"
     | { type: "dropdown"; options: string[] }
     | { type: "group"; defn: ObjectDef<any> };  // New type to handle nested objects
 
@@ -78,6 +116,12 @@ export type GetRenderer = (render: RenderDef) => FieldRenderer;
 export const getRender = (renderDef: RenderDef) => {
     if (renderDef === "text") {
         return renderStringInput;
+    }
+    if (renderDef === "number") {
+        return renderNumberInput;
+    }
+    if (renderDef === "password") {
+        return renderPasswordInput;
     }
 
     if (typeof renderDef === "object") {

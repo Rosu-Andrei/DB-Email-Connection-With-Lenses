@@ -24,7 +24,10 @@ export const FieldWithLens = <T,>(props: FieldWithLensProps<T>) => {
         id: idString,
         value: { [idString]: fieldValue },
         onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-            const newValue = e.target.value;
+            let newValue: any = e.target.value;
+            if (renderer === "number") {
+                newValue = e.target.value !== '' ? parseFloat(e.target.value) : undefined;
+            }
             handleChange(newValue);
         },
     };

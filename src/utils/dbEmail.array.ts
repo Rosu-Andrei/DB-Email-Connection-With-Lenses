@@ -1,11 +1,12 @@
 export const baseProp = [
     {type: 'title', text: 'Base Credentials'},
     'baseCredentials.host/string',
-    'baseCredentials.port/string',
+    'baseCredentials.port/number',
     {type: 'subtitle', text: 'User Credentials'},
     'baseCredentials.userCredentials.user/string',
-    'baseCredentials.userCredentials.password/string',
+    'baseCredentials.userCredentials.password/password',
 ];
+
 
 
 export const oracleProps = [
@@ -15,12 +16,14 @@ export const oracleProps = [
     'sid/string',
 ];
 
+
 export const mySqlProps = [
     ...baseProp,
     {type: 'title', text: 'Specific Credentials'},
     'database/string',
     'ssl/string'
 ];
+
 
 export const sqlServerProps = [
     ...baseProp,
@@ -39,13 +42,14 @@ export const postgresProps = [
 export const smtpProps = [
     {type: 'title', text: 'Specific Credentials'},
     'smtpSettings.host/string',
-    'smtpSettings.port/string',
+    'smtpSettings.port/number',
     'smtpSettings.userCredentials.user/string',
-    'smtpSettings.userCredentials.password/string',
+    'smtpSettings.userCredentials.password/password',
     'smtpSettings.secure/options:true,false'
 ];
 
+
 export const sendGridProps = [
     {type: 'title', text: 'Specific Credentials'},
-    'sendGridSettings.apiKey/string'
+    'sendGridSettings.apiKey/password'
 ];
