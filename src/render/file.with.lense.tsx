@@ -31,7 +31,7 @@ export const FieldWithLens = <T,>(props: FieldWithLensProps<T>) => {
 
     return (
         <div>
-            <label>{idString}</label>
+            <label>{lens.path.join('.')}</label>
             {fieldRenderer(fieldInputs)}
         </div>
     );

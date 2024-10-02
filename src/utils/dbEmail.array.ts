@@ -1,42 +1,43 @@
 export const baseProp = [
+    {type: 'title', text: 'Base Credentials'},
     'baseCredentials.host/string',
     'baseCredentials.port/string',
+    {type: 'subtitle', text: 'User Credentials'},
     'baseCredentials.userCredentials.user/string',
     'baseCredentials.userCredentials.password/string',
 ];
 
 
-
 export const oracleProps = [
     ...baseProp,
+    {type: 'title', text: 'Specific Credentials'},
     'serviceName/string',
     'sid/string',
 ];
 
-
 export const mySqlProps = [
     ...baseProp,
-
-    'baseCredentials.database/string',
-    'baseCredentials.ssl/string'
+    {type: 'title', text: 'Specific Credentials'},
+    'database/string',
+    'ssl/string'
 ];
 
 export const sqlServerProps = [
     ...baseProp,
-
-    'baseCredentials.instanceName/string',
-    'baseCredentials.encrypt/string'
+    {type: 'title', text: 'Specific Credentials'},
+    'instanceName/string',
+    'encrypt/string'
 ]
 
 export const postgresProps = [
     ...baseProp,
-
-    'baseCredentials.database/string',
-    'baseCredentials.ssl/string'
+    {type: 'title', text: 'Specific Credentials'},
+    'database/string',
+    'ssl/string'
 ]
 
 export const smtpProps = [
-
+    {type: 'title', text: 'Specific Credentials'},
     'smtpSettings.host/string',
     'smtpSettings.port/string',
     'smtpSettings.userCredentials.user/string',
@@ -45,6 +46,6 @@ export const smtpProps = [
 ];
 
 export const sendGridProps = [
-
+    {type: 'title', text: 'Specific Credentials'},
     'sendGridSettings.apiKey/string'
 ];

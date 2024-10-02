@@ -72,6 +72,7 @@ export type RenderDef =
     | { type: "dropdown"; options: string[] }
     | { type: "group"; defn: ObjectDef<any> };  // New type to handle nested objects
 
+
 export type GetRenderer = (render: RenderDef) => FieldRenderer;
 
 export const getRender = (renderDef: RenderDef) => {
