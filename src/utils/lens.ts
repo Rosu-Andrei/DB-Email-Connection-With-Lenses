@@ -7,8 +7,8 @@ export type LensAndPath<Main, Child> = {
 // Create an identity lens for a given object
 export function identityLens<T>(): LensAndPath<T, T> {
     return {
-        get: (main: T) => main,  // Simply return the main object
-        set: (main: T, child: T) => child,  // Replace the main object with the child
+        get: (main: T) => main, // Simply return the main object
+        set: (main: T, child: T) => child, // Replace the main object with the child
         path: []
     };
 }
@@ -16,12 +16,17 @@ export function identityLens<T>(): LensAndPath<T, T> {
 // Create a lens that focuses on a specific child property in a larger object
 export function child<Main, T, K extends keyof T>(lens: LensAndPath<Main, T>, key: K): LensAndPath<Main, T[K]> {
     return {
-        get: (main: Main) => lens.get(main)?.[key],  // Get the child property
-        set: (main: Main, child: T[K]) => {
-            const parent = lens.get(main);  // Get the parent object
-            if (parent === undefined) return main;  // If the parent is undefined, return the main object unchanged
-            const updatedParent = {...parent, [key]: child};  // Create a new object with the updated child
-            return lens.set(main, updatedParent as T);  // Set the updated parent in the main object
+        get: (main: Main) => {
+            const parent = lens.get(main);
+            return parent ? parent[key] : undefined;
+        },
+        set: (main: Main, childValue: T[K]) => {
+            const parent = lens.get(main) || {} as T;
+            const updatedParent = {
+                ...parent,
+                [key]: childValue
+            };
+            return lens.set(main, updatedParent);
         },
         path: [...lens.path, key as string]
     };

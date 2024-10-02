@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {DatabaseConnectionV2, emptyDatabaseConnection} from "../domain/DatabaseConnection";
 import {arrayToObj} from "../render/display.from.array";
-import {oracleProps} from "../utils/db.array";
+import {oracleProps} from "../utils/dbEmail.array";
 
 export const DbFormWithArray: React.FC = () => {
     // Set up state management for the Dragon object using initialDragon as the starting state
