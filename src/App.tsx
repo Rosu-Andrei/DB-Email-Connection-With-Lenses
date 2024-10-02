@@ -1,38 +1,28 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
-import {DatabaseType, DatabaseTypeProvider, isDatabase} from "./render/dbType/dbType";
+import {DatabaseType, DatabaseTypeProvider} from "./render/dbType/dbType";
 import {DbFormWithArray} from "./component/DbConnectionForm2";
-import {mySqlProps, oracleProps, postgresProps, sqlServerProps} from "./utils/db.array";
+import {allDef} from "./utils/db.component.prop";
+import {useDatabaseType} from "./hooks/use.database.type";
 
-
-// Mocked database type from URL for demonstration purposes
-const dbType = window.location.search.split('=')[1] as DatabaseType;
-if (dbType && !isDatabase(dbType))
-    throw new Error('Failed to get the database type from the url');
-
-
-// Mapping of database types to property arrays
-const dbPropsMap: Record<DatabaseType, Array<any>> = {
-    oracle: oracleProps,
-    mysql: mySqlProps,
-    sqlServer: sqlServerProps,
-    postgres: postgresProps
-};
 
 function App() {
-    // State to manage the dynamic property array
-    const [dynamicProps, setDynamicProps] = useState(dbPropsMap[dbType] || oracleProps);
+    // Use the custom hook to get the current selected database type and dynamic properties.
+    const {selectedDbType, dynamicProps, handleDbTypeChange} = useDatabaseType();
 
     return (
         <div className="App">
-            <DatabaseTypeProvider databaseType={dbType}>
-                <select onChange={(e) => setDynamicProps(dbPropsMap[e.target.value as DatabaseType])} value={dbType}>
-                    <option value="oracle">Oracle</option>
-                    <option value="mysql">MySQL</option>
-                    <option value="sqlServer">SQL Server</option>
-                    <option value="postgres">Postgres</option>
+            <DatabaseTypeProvider databaseType={selectedDbType as DatabaseType}>
+                {/* Dropdown to select the database type */}
+                <select onChange={handleDbTypeChange} value={selectedDbType}>
+                    {allDef.map(def => (
+                        <option key={def.name} value={def.name.toLowerCase()}>
+                            {def.name}
+                        </option>
+                    ))}
                 </select>
 
+                {/* Dynamic form based on the selected database type */}
                 <DbFormWithArray dynamicProps={dynamicProps}/>
             </DatabaseTypeProvider>
         </div>
