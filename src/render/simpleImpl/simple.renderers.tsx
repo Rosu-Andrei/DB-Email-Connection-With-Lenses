@@ -23,11 +23,11 @@ export type FieldRenderer = <T, >(fieldInputs: fieldInputs<T>) => JSX.Element
 /**
  * an implementation of FieldRenderer that renders a text input
  */
-export const renderStringInput: FieldRenderer = <T, >
-(
+export const renderStringInput: FieldRenderer = <T,>(
     fieldInputs: fieldInputs<T>
 ) => {
-    const {id, value, onChange} = fieldInputs
+    const { id, value, onChange } = fieldInputs;
+    const inputValue = value[id as keyof typeof value] || '';
     return (
         <input
             type="text"
@@ -38,6 +38,7 @@ export const renderStringInput: FieldRenderer = <T, >
         />
     );
 };
+
 /**
  * an implementation of FieldRenderer that renders a select input
  */
@@ -70,6 +71,7 @@ export type RenderDef =
     | "text"
     | { type: "dropdown"; options: string[] }
     | { type: "group"; defn: ObjectDef<any> };  // New type to handle nested objects
+
 
 export type GetRenderer = (render: RenderDef) => FieldRenderer;
 
