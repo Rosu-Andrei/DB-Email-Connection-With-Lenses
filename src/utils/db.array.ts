@@ -18,20 +18,20 @@ export const oracleProps = [
 export const mySqlProps = [
     ...baseProp,
     {type: 'title', text: 'Specific Credentials'},
-    'baseCredentials.database/string',
-    'baseCredentials.ssl/string'
+    'database/string',
+    'ssl/string'
 ];
 
 export const sqlServerProps = [
     ...baseProp,
     {type: 'title', text: 'Specific Credentials'},
-    'baseCredentials.instanceName/string',
-    'baseCredentials.encrypt/string'
+    'instanceName/string',
+    'encrypt/string'
 ]
 
 export const postgresProps = [
     ...baseProp,
     {type: 'title', text: 'Specific Credentials'},
-    'baseCredentials.database/string',
-    'baseCredentials.ssl/string'
+    'database/string',
+    'ssl/string'
 ]

@@ -1,16 +1,20 @@
-import React, {useState} from "react";
-import {DatabaseConnectionV2, emptyDatabaseConnection} from "../domain/DatabaseConnection";
-import {arrayToObj} from "../render/display.from.array";
-import {oracleProps} from "../utils/db.array";
+// DbFormWithArray.tsx
+import React, { useState } from "react";
+import { DatabaseConnectionV2, emptyDatabaseConnection } from "../domain/DatabaseConnection";
+import { arrayToObj } from "../render/display.from.array";
 
-export const DbFormWithArray: React.FC = () => {
-    // Set up state management for the Dragon object using initialDragon as the starting state
+// Props interface for the component
+interface DbFormWithArrayProps {
+    dynamicProps: Array<any>; // Expected shape of the props array
+}
+
+export const DbFormWithArray: React.FC<DbFormWithArrayProps> = ({ dynamicProps }) => {
+    // Set up state management for form data using initial values
     const [formData, setFormData] = useState<DatabaseConnectionV2>(emptyDatabaseConnection);
 
-    // the first parameter will determine the props displayed in the web page.
     return (
         <div>
-            {arrayToObj<DatabaseConnectionV2>(oracleProps, formData as DatabaseConnectionV2, setFormData)}
+            {arrayToObj<DatabaseConnectionV2>(dynamicProps, formData as DatabaseConnectionV2, setFormData)}
         </div>
     );
 };
