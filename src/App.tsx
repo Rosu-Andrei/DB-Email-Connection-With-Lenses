@@ -1,88 +1,62 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
-import { DatabaseType, DatabaseTypeProvider, isDatabase, databases } from "./render/dbType/dbType";
-import { DbFormWithArray } from "./component/DbConnectionForm2";
-import { mySqlProps, oracleProps, postgresProps, sqlServerProps, smtpProps, sendGridProps } from "./utils/dbEmail.array";
-import { EmailType, EmailTypeProvider, isEmailType} from "./render/dbType/emailType";
-import { EmailFormWithArray } from "./component/EmailConnectionForm";
+import {DatabaseType, DatabaseTypeProvider} from "./render/dbType/dbType";
+import {EmailType, EmailTypeProvider} from "./render/dbType/emailType";
+import {DbFormWithArray} from "./component/DbFormWithArray";
+import {EmailFormWithArray} from "./component/EmailConnectionForm";
+import {allDef, emailDef} from "./utils/db.component.prop";
+import {useConnectionType} from "./hooks/use.connection";
 
-// Mapping of database types to property arrays
-const dbPropsMap: Record<DatabaseType, Array<any>> = {
-    oracle: oracleProps,
-    mysql: mySqlProps,
-    sqlServer: sqlServerProps,
-    postgres: postgresProps
-};
-
-// Mapping of email types to property arrays
-const emailPropsMap: Record<EmailType, Array<any>> = {
-    smtp: smtpProps,
-    sendgrid: sendGridProps
-};
 
 function App() {
+
     // State to manage connection type ('db' or 'email') and provider type
     const [connectionType, setConnectionType] = useState<'db' | 'email'>('db');
-    const [providerType, setProviderType] = useState<string>('');
 
-    // State to manage the dynamic property array
-    const [dynamicProps, setDynamicProps] = useState<Array<any>>([]);
+    // Use the generic hook for managing the provider type and dynamic properties (the array of definitions for the lens)
+    const {selectedType, dynamicProps, handleTypeChange, setSelectedType, setDynamicProps} = useConnectionType(
+        connectionType === 'db' ? allDef : emailDef
+    );
 
     const handleConnectionTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newConnectionType = e.target.value as 'db' | 'email';
-        setConnectionType(newConnectionType);
-        setProviderType('');
+        setConnectionType(e.target.value as 'db' | 'email');
+    };
+    // Reset the selectedType and dynamicProps whenever the connection type changes
+    useEffect(() => {
+        // Clear the selectedType and dynamicProps when switching between 'db' and 'email'
+        setSelectedType('');
         setDynamicProps([]);
-    };
-
-    const handleProviderTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newProviderType = e.target.value;
-        setProviderType(newProviderType);
-
-        if (connectionType === 'db' && isDatabase(newProviderType)) {
-            setDynamicProps(dbPropsMap[newProviderType as DatabaseType]);
-        } else if (connectionType === 'email' && isEmailType(newProviderType)) {
-            setDynamicProps(emailPropsMap[newProviderType as EmailType]);
-        }
-    };
+    }, [connectionType, setSelectedType, setDynamicProps]);
 
     return (
         <div className="App">
-            {/* Connection Type Selector */}
             <select value={connectionType} onChange={handleConnectionTypeChange}>
                 <option value="db">Database Connection</option>
                 <option value="email">Email Connection</option>
             </select>
 
             {connectionType === 'db' && (
-                <DatabaseTypeProvider databaseType={providerType as DatabaseType}>
-                    {/* Database Provider Selector */}
-                    <select onChange={handleProviderTypeChange} value={providerType}>
-                        <option value="">Select Database Type</option>
-                        <option value="oracle">Oracle</option>
-                        <option value="mysql">MySQL</option>
-                        <option value="sqlServer">SQL Server</option>
-                        <option value="postgres">Postgres</option>
+                <DatabaseTypeProvider databaseType={selectedType as DatabaseType}>
+                    <select onChange={handleTypeChange} value={selectedType}>
+                        {allDef.map(def => (
+                            <option key={def.name} value={def.name.toLowerCase()}>
+                                {def.name}
+                            </option>
+                        ))}
                     </select>
-
-                    {providerType && dynamicProps.length > 0 && (
-                        <DbFormWithArray dynamicProps={dynamicProps} />
-                    )}
+                    <DbFormWithArray dynamicProps={dynamicProps}/>
                 </DatabaseTypeProvider>
             )}
-
             {connectionType === 'email' && (
-                <EmailTypeProvider emailType={providerType as EmailType}>
-                    {/* Email Provider Selector */}
-                    <select onChange={handleProviderTypeChange} value={providerType}>
-                        <option value="">Select Email Provider</option>
-                        <option value="smtp">SMTP</option>
-                        <option value="sendgrid">SendGrid</option>
+                <EmailTypeProvider emailType={selectedType as EmailType}>
+                    <select onChange={handleTypeChange} value={selectedType}>
+                        {emailDef.map(def => (
+                            <option key={def.name} value={def.name.toLowerCase()}>
+                                {def.name}
+                            </option>
+                        ))}
                     </select>
-
-                    {providerType && dynamicProps.length > 0 && (
-                        <EmailFormWithArray dynamicProps={dynamicProps} />
-                    )}
+                    <EmailFormWithArray dynamicProps={dynamicProps}/>
                 </EmailTypeProvider>
             )}
         </div>
