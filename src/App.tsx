@@ -1,30 +1,33 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {DatabaseType, DatabaseTypeProvider} from "./render/dbType/dbType";
+import {EmailType, EmailTypeProvider} from "./render/dbType/emailType";
 import {DbFormWithArray} from "./component/DbFormWithArray";
-import {EmailType, EmailTypeProvider, isEmailType} from "./render/dbType/emailType";
 import {EmailFormWithArray} from "./component/EmailConnectionForm";
-import {useDatabaseType} from "./hooks/use.database.type";
-import {allDef} from "./utils/db.component.prop";
-import {useEmailType} from "./hooks/use.email.def";
-import {emailDeff} from "./utils/email.component.prop";
+import {allDef, emailDef} from "./utils/db.component.prop";
+import {useConnectionType} from "./hooks/use.connection";
 
 
 function App() {
+
     // State to manage connection type ('db' or 'email') and provider type
     const [connectionType, setConnectionType] = useState<'db' | 'email'>('db');
-    const [providerType, setProviderType] = useState<string>('');
-    const [dynamicProps, setDynamicProps] = useState<Array<any>>([]);
+
+    // Use the generic hook for managing the provider type and dynamic properties (the array of definitions for the lens)
+    const {selectedType, dynamicProps, handleTypeChange, setSelectedType, setDynamicProps} = useConnectionType(
+        connectionType === 'db' ? allDef : emailDef
+    );
 
     const handleConnectionTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newConnectionType = e.target.value as 'db' | 'email';
-        setConnectionType(newConnectionType);
-        setProviderType('');
-        setDynamicProps([]);
+        setConnectionType(e.target.value as 'db' | 'email');
     };
+    // Reset the selectedType and dynamicProps whenever the connection type changes
+    useEffect(() => {
+        // Clear the selectedType and dynamicProps when switching between 'db' and 'email'
+        setSelectedType('');
+        setDynamicProps([]);
+    }, [connectionType, setSelectedType, setDynamicProps]);
 
-    const {selectedDbType, dynamicDbProps, handleDbTypeChange} = useDatabaseType();
-    const {selectedEmailType, dynamicEmailProps, handleEmailTypeChange} = useEmailType();
     return (
         <div className="App">
             <select value={connectionType} onChange={handleConnectionTypeChange}>
@@ -33,30 +36,29 @@ function App() {
             </select>
 
             {connectionType === 'db' && (
-                <DatabaseTypeProvider databaseType={selectedDbType as DatabaseType}>
-                    <select onChange={handleDbTypeChange} value={selectedDbType}>
+                <DatabaseTypeProvider databaseType={selectedType as DatabaseType}>
+                    <select onChange={handleTypeChange} value={selectedType}>
                         {allDef.map(def => (
                             <option key={def.name} value={def.name.toLowerCase()}>
                                 {def.name}
                             </option>
                         ))}
                     </select>
-                    <DbFormWithArray dynamicProps={dynamicDbProps}/>
+                    <DbFormWithArray dynamicProps={dynamicProps}/>
                 </DatabaseTypeProvider>
             )}
             {connectionType === 'email' && (
-                <EmailTypeProvider emailType={selectedEmailType as EmailType}>
-                    <select onChange={handleEmailTypeChange} value={selectedEmailType}>
-                        {emailDeff.map(def => (
+                <EmailTypeProvider emailType={selectedType as EmailType}>
+                    <select onChange={handleTypeChange} value={selectedType}>
+                        {emailDef.map(def => (
                             <option key={def.name} value={def.name.toLowerCase()}>
                                 {def.name}
                             </option>
                         ))}
                     </select>
-                    <EmailFormWithArray dynamicProps={dynamicEmailProps}/>
+                    <EmailFormWithArray dynamicProps={dynamicProps}/>
                 </EmailTypeProvider>
             )}
-
         </div>
     );
 }

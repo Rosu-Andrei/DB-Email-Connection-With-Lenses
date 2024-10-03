@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {allDef} from "../utils/db.component.prop";
-import {emailDeff, SmtpDef} from "../utils/email.component.prop";
+import {allDef, emailDef, SmtpDef} from "../utils/db.component.prop";
+
 
 export type UseEmailTypeResult = {
     selectedEmailType: string;
@@ -9,7 +9,7 @@ export type UseEmailTypeResult = {
 };
 
 const emailPropsMap: Record<string, Array<any>> = {};
-emailDeff.forEach((def) => {
+emailDef.forEach((def) => {
     emailPropsMap[def.name.toLowerCase()] = def.render;
 });
 
