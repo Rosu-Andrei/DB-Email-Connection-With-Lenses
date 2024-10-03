@@ -1,7 +1,8 @@
 export type ConnectionDef = {
-    name: string,
-    render: Array<any>
-}
+    name: string;
+    render: Array<any>;
+};
+
 export const MysqlDef: ConnectionDef = {
     name: 'MySql',
     render: [

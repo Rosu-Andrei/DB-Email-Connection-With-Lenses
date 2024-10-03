@@ -1,17 +1,24 @@
+// src/render/field.with.lense.tsx
+
 import React from 'react';
-import { getRender, RenderDef } from "./simpleImpl/simple.renderers";
-import { LensAndPath } from "../utils/lens";
+import { getRender, RenderDef } from './simpleImpl/simple.renderers';
+import { LensAndPath } from '../utils/lens';
 
 interface FieldWithLensProps<T> {
     id: keyof T; // path[] of the lens
     renderer: RenderDef;
-    lens: LensAndPath<T, any>;
+    lens: LensAndPath<any, any>;
     obj: any;
     setObj: (o: any) => void;
 }
 
-export const FieldWithLens = <T,>(props: FieldWithLensProps<T>) => {
-    const { id, renderer, lens, obj, setObj } = props;
+export const FieldWithLens = <T,>({
+                                      id,
+                                      renderer,
+                                      lens,
+                                      obj,
+                                      setObj,
+                                  }: FieldWithLensProps<T>) => {
     const fieldValue = lens.get(obj);
     const handleChange = (newValue: any) => {
         const updatedObj = lens.set(obj, newValue);
@@ -20,12 +27,18 @@ export const FieldWithLens = <T,>(props: FieldWithLensProps<T>) => {
 
     const fieldRenderer = getRender(renderer);
     const idString = lens.path[lens.path.length - 1];
+
+    // Adjust the label to exclude unwanted parts
+    const formDataIndex = lens.path.indexOf('formData');
+    const relevantPath = formDataIndex >= 0 ? lens.path.slice(formDataIndex + 1) : lens.path;
+    const labelText = relevantPath.join('.');
+
     const fieldInputs = {
         id: idString,
         value: { [idString]: fieldValue },
         onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
             let newValue: any = e.target.value;
-            if (renderer === "number") {
+            if (renderer === 'number') {
                 newValue = e.target.value !== '' ? parseFloat(e.target.value) : undefined;
             }
             handleChange(newValue);
@@ -34,7 +47,7 @@ export const FieldWithLens = <T,>(props: FieldWithLensProps<T>) => {
 
     return (
         <div>
-            <label>{lens.path.join('.')}</label>
+            <label>{labelText}</label>
             {fieldRenderer(fieldInputs)}
         </div>
     );

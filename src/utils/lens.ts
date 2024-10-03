@@ -1,3 +1,5 @@
+// src/utils/lens.ts
+
 export type LensAndPath<Main, Child> = {
     get: (main: Main) => Child | undefined;
     set: (main: Main, child: Child) => Main;
@@ -7,33 +9,35 @@ export type LensAndPath<Main, Child> = {
 // Create an identity lens for a given object
 export function identityLens<T>(): LensAndPath<T, T> {
     return {
-        get: (main: T) => main, // Simply return the main object
-        set: (main: T, child: T) => child, // Replace the main object with the child
-        path: []
+        get: (main: T) => main,
+        set: (main: T, child: T) => child,
+        path: [],
     };
 }
 
-// Create a lens that focuses on a specific child property in a larger object
-export function child<Main, T, K extends keyof T>(lens: LensAndPath<Main, T>, key: K): LensAndPath<Main, T[K]> {
+export function child<Main, T, K extends keyof T>(
+    lens: LensAndPath<Main, T>,
+    key: K
+): LensAndPath<Main, T[K]> {
     return {
         get: (main: Main) => {
             const parent = lens.get(main);
             return parent ? parent[key] : undefined;
         },
         set: (main: Main, childValue: T[K]) => {
-            const parent = lens.get(main) || {} as T;
+            const parent = lens.get(main) || ({} as T);
             const updatedParent = {
                 ...parent,
-                [key]: childValue
+                [key]: childValue,
             };
             return lens.set(main, updatedParent);
         },
-        path: [...lens.path, key as string]
+        path: [...lens.path, key as string],
     };
 }
 
 /**
- * we parse the left side of the values of the array, and it returns a lens that specifically point to that property
+ * Parses a string path and returns a lens focused on that property.
  */
 export function parseLens<Main, Child>(s: string): LensAndPath<Main, Child> {
     const path = s.split('.');
@@ -66,4 +70,23 @@ export class LensBuilder<Main, Child> {
 // Helper function to start building a lens
 export function lensBuilder<T>() {
     return new LensBuilder(identityLens<T>());
+}
+
+// Compose two lenses into one
+export function composeLens<Main, Child, GrandChild>(
+    outerLens: LensAndPath<Main, Child>,
+    innerLens: LensAndPath<Child, GrandChild>
+): LensAndPath<Main, GrandChild> {
+    return {
+        get: (main: Main) => {
+            const child = outerLens.get(main);
+            return child ? innerLens.get(child) : undefined;
+        },
+        set: (main: Main, grandChildValue: GrandChild) => {
+            const child = outerLens.get(main) || ({} as Child);
+            const updatedChild = innerLens.set(child, grandChildValue);
+            return outerLens.set(main, updatedChild);
+        },
+        path: [...outerLens.path, ...innerLens.path],
+    };
 }
