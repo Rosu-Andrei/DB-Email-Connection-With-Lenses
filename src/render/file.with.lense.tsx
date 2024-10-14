@@ -1,15 +1,14 @@
-// src/render/field.with.lense.tsx
-
 import React from 'react';
 import { getRender, RenderDef } from './simpleImpl/simple.renderers';
 import { LensAndPath } from '../utils/lens';
+import {SetInputValueEvent, Event} from "../events/events";
 
 interface FieldWithLensProps<T> {
     id: keyof T; // path[] of the lens
     renderer: RenderDef;
     lens: LensAndPath<any, any>;
     obj: any;
-    setObj: (o: any) => void;
+    handleEvent: (event: Event) => void;
 }
 
 export const FieldWithLens = <T,>({
@@ -17,12 +16,19 @@ export const FieldWithLens = <T,>({
                                       renderer,
                                       lens,
                                       obj,
-                                      setObj,
+                                      handleEvent,
                                   }: FieldWithLensProps<T>) => {
     const fieldValue = lens.get(obj);
     const handleChange = (newValue: any) => {
-        const updatedObj = lens.set(obj, newValue);
-        setObj(updatedObj);
+        const event: SetInputValueEvent = {
+            event: 'setInputValue',
+            path: lens.path.join('.'),
+            connectionId: obj.id,
+            value: newValue,
+            fieldName: obj.fieldName,
+        };
+
+        handleEvent(event);
     };
 
     const fieldRenderer = getRender(renderer);

@@ -1,14 +1,13 @@
-// src/render/display.form.array.tsx
-
 import {parseLens, composeLens, LensAndPath} from '../utils/lens';
 import { RenderDef } from './simpleImpl/simple.renderers';
 import React from 'react';
 import { FieldWithLens} from "./file.with.lense";
+import {Event} from "../events/events"
 
 export const arrayToObj = <Main extends any>(
     list: any[],
     obj: Main,
-    setObj: (main: Main) => void,
+    handleEvent: (event: Event) => void,
     baseLens?: LensAndPath<any, Main>
 ) => {
     return list.map((item, index) => {
@@ -39,7 +38,7 @@ export const arrayToObj = <Main extends any>(
                     renderer={renderer}
                     lens={lens}
                     obj={obj}
-                    setObj={setObj}
+                    handleEvent={handleEvent}
                 />
             );
         } else if (item.type) {

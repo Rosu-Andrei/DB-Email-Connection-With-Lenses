@@ -1,14 +1,14 @@
-// src/component/ConnectionComponent.tsx
-
-import React, { useEffect } from 'react'; // Import useEffect
+import React, { useEffect } from 'react';
 import { LensAndPath, LensBuilder } from '../utils/lens';
-import { allDef, ConnectionDef, emailDef } from '../utils/db.component.prop';
+import { dbDef, ConnectionDef, emailDef } from '../utils/component.prop';
 import { FormWithArray } from './FormWithArray';
+import {Event} from "../events/events";
 
 type ConnectionComponentProps<S> = {
     id: string;
     s: S;
-    setS: (s: S) => void;
+    //setS: (s: S) => void;
+    handleEvent: (event: Event) => void;
     lens: LensAndPath<S, any>;
     removeConnection: (id: string) => void;
 };
@@ -16,12 +16,10 @@ type ConnectionComponentProps<S> = {
 export function ConnectionComponent<S>({
                                            id,
                                            s,
-                                           setS,
                                            lens,
+                                           handleEvent,
                                            removeConnection,
                                        }: ConnectionComponentProps<S>) {
-    const connection = lens.get(s) || {};
-
     // Use LensBuilder to create lenses
     const lensBuilder = new LensBuilder(lens);
     const connectionTypeLens = lensBuilder.focusOn('connectionType').build();
@@ -39,7 +37,7 @@ export function ConnectionComponent<S>({
         newState = selectedTypeLens.set(newState, '');
         newState = dynamicPropsLens.set(newState, []);
         newState = formDataLens.set(newState, {}); // Reset formData
-        setS(newState);
+        //setS(newState);
     };
 
     const updateSelectedType = (value: string, defs: ConnectionDef[]) => {
@@ -47,19 +45,19 @@ export function ConnectionComponent<S>({
         const def = defs.find((d) => d.name.toLowerCase() === value);
         newState = dynamicPropsLens.set(newState, def ? def.render : []);
         newState = formDataLens.set(newState, {}); // Reset formData
-        setS(newState);
+        //setS(newState);
     };
 
     // useEffect to set default selectedType and dynamicProps when component mounts or connectionType changes
     useEffect(() => {
         if (!selectedType) {
-            const defs = connectionType === 'db' ? allDef : emailDef;
+            const defs = connectionType === 'db' ? dbDef : emailDef;
             const initialSelectedType = defs[0].name.toLowerCase();
             const def = defs.find((d) => d.name.toLowerCase() === initialSelectedType);
 
             let newState = selectedTypeLens.set(s, initialSelectedType);
             newState = dynamicPropsLens.set(newState, def ? def.render : []);
-            setS(newState);
+            //setS(newState);
         }
     }, [connectionType]);
 
@@ -84,9 +82,9 @@ export function ConnectionComponent<S>({
                 <div>
                     <select
                         value={selectedType}
-                        onChange={(e) => updateSelectedType(e.target.value, allDef)}
+                        onChange={(e) => updateSelectedType(e.target.value, dbDef)}
                     >
-                        {allDef.map((def) => (
+                        {dbDef.map((def) => (
                             <option key={def.name} value={def.name.toLowerCase()}>
                                 {def.name}
                             </option>
@@ -94,7 +92,8 @@ export function ConnectionComponent<S>({
                     </select>
                     <FormWithArray
                         s={s}
-                        setS={setS}
+                        //setS={setS}
+                        handleEvent={handleEvent}
                         lens={lensBuilder.focusOn('formData').build()}
                         dynamicProps={dynamicProps}
                     />
@@ -115,7 +114,8 @@ export function ConnectionComponent<S>({
                     </select>
                     <FormWithArray
                         s={s}
-                        setS={setS}
+                        //setS={setS}
+                        handleEvent={handleEvent}
                         lens={lensBuilder.focusOn('formData').build()}
                         dynamicProps={dynamicProps}
                     />
