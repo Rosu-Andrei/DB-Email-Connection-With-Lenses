@@ -6,11 +6,11 @@ import {
     addConnectionEventProcessor,
     removeConnectionEventProcessor,
     EventProcessors,
-    events,
     processEvent,
     setInputValueEventProcessor, updateConnectionTypeEventProcessor, updateSelectedTypeEventProcessor
 } from "./events/event.processors";
 import { AddConnectionEvent, RemoveConnectionEvent, Event } from "./events/events";
+import {DisplayEvents, EventStore} from "./events/event.store";
 
 export type AppState = {
     connections: { [key: string]: any };
@@ -30,9 +30,10 @@ const eventProcessor: EventProcessors<AppState> = {
 
 function App() {
     const [state, setState] = useState<AppState>({ connections: {} });
+    const [events, setEvents] = useState<EventStore>({ events: [] });
 
     const handleEvent = <E extends Event>(event: E) => {
-        processEvent(eventProcessor, state, event).then((result) => {
+        processEvent(eventProcessor, state, event, setEvents).then((result) => {
             if (result.errors.length > 0) {
                 console.error(result.errors);
             } else if (result.state) {
@@ -89,13 +90,8 @@ function App() {
                 );
             })}
 
-            <h2>Events Log</h2>
-            <pre style={{backgroundColor: '#f0f0f0', padding: '10px'}}>
-                {events.map((event) => JSON.stringify(event)).join('\n')}
-            </pre>
+            <DisplayEvents events={events.events} />
         </div>
-
-
     );
 }
 
