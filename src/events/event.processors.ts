@@ -5,14 +5,14 @@ import {
     Event,
     ErrorEvent,
     RemoveConnectionEvent,
-    SetInputValueEvent
+    SetInputValueEvent, UpdateConnectionTypeEvent, UpdateSelectedTypeEvent
 } from "./events";
 import {dbDef, emailDef} from "../utils/component.prop";
 import {AppState} from "../App";
 import {PathToLensFn} from "../utils/lens";
 
 export type EventProcessorFn<S, E extends BaseEvent> = (p: EventProcessors<S>, event: E, s: S ) => Promise<S>
-export let lastEvent: Event;
+export let events: Event[] = [];
 
 export interface EventProcessors<S> {
     processors: EventNameAnd<EventProcessorFn<S, any>>
@@ -38,11 +38,55 @@ export const addConnectionEventProcessor: EventProcessorFn<AppState, AddConnecti
         },
     };
 
-    //events.push(event);
-    lastEvent = event;
+    events.push(event);
 
     return newState;
 };
+
+export const updateConnectionTypeEventProcessor: EventProcessorFn<
+    AppState,
+    UpdateConnectionTypeEvent> = async (processor, event, state) => {
+    const { connectionId, connectionType } = event;
+    const connectionLens = processor.parseLens(`connections.${connectionId}`);
+
+    // Update the connectionType
+    let newState = connectionLens.focusOn('connectionType').set(state, connectionType);
+
+    // Reset selectedType, dynamicProps, and formData
+    newState = connectionLens.focusOn('selectedType').set(newState, '');
+    newState = connectionLens.focusOn('dynamicProps').set(newState, []);
+    newState = connectionLens.focusOn('formData').set(newState, {});
+
+    events.push(event);
+
+    return newState;
+};
+
+
+export const updateSelectedTypeEventProcessor: EventProcessorFn<
+    AppState,
+    UpdateSelectedTypeEvent> = async (processor, event, state) => {
+    const { connectionId, selectedType, defs } = event;
+    const connectionLens = processor.parseLens(`connections.${connectionId}`);
+
+    // Update the selectedType
+    let newState = connectionLens.focusOn('selectedType').set(state, selectedType);
+
+    // Find the definition for the selected type
+    const def = defs?.find((d) => d.name.toLowerCase() === selectedType);
+
+    // Update dynamicProps
+    newState = connectionLens.focusOn('dynamicProps').set(newState, def ? def.render : []);
+
+    // Reset formData
+    newState = connectionLens.focusOn('formData').set(newState, {});
+
+    const { defs: _, ...eventWithoutDefs } = event;
+    events.push(eventWithoutDefs);
+
+    return newState;
+};
+
 
 export const removeConnectionEventProcessor: EventProcessorFn<AppState, RemoveConnectionEvent> = async (processor, event, state) => {
     const { connectionId } = event;
@@ -51,14 +95,14 @@ export const removeConnectionEventProcessor: EventProcessorFn<AppState, RemoveCo
         ...state,
         connections: restConnections,
     };
-    lastEvent = event;
+    events.push(event);
 
     return newState;
 };
 
 export const setInputValueEventProcessor: EventProcessorFn<AppState, SetInputValueEvent> = async (processor, event, state) => {
         let lens = processor.parseLens(event.path);
-        lastEvent = event;
+        events.push(event);
 
         return lens.set(state, event.value);
 }

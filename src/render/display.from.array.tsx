@@ -1,7 +1,7 @@
 import {parseLens, composeLens, LensAndPath} from '../utils/lens';
 import { RenderDef } from './simpleImpl/simple.renderers';
 import React from 'react';
-import { FieldWithLens} from "./file.with.lense";
+import { FieldWithLens} from "./field.with.lense";
 import {Event} from "../events/events"
 
 export const arrayToObj = <Main extends any>(

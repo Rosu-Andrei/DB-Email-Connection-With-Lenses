@@ -1,4 +1,6 @@
-export type EventType = 'addConnection' | 'removeConnection' | 'updateConnection' | 'setInputValue' | 'error';
+import {ConnectionDef} from "../utils/component.prop";
+
+export type EventType = 'addConnection' | 'removeConnection' | 'updateConnectionType' | 'updateSelectedType' | 'setInputValue' | 'error';
 
 export interface BaseEvent {
     path: string;
@@ -16,10 +18,17 @@ export interface RemoveConnectionEvent extends BaseEvent {
     connectionId: string;
 }
 
-export interface UpdateConnectionEvent extends BaseEvent {
-    event: 'updateConnection';
+export interface UpdateConnectionTypeEvent extends BaseEvent {
+    event: 'updateConnectionType';
     connectionId: string;
-    updatedProps: any;
+    connectionType: 'db' | 'email';
+}
+
+export interface UpdateSelectedTypeEvent extends BaseEvent {
+    event: 'updateSelectedType';
+    connectionId: string;
+    selectedType: string;
+    defs?: ConnectionDef[];
 }
 
 export interface SetInputValueEvent extends BaseEvent {
@@ -34,11 +43,12 @@ export interface ErrorEvent extends BaseEvent {
     error: string;
 }
 
-export type Event = AddConnectionEvent | RemoveConnectionEvent | UpdateConnectionEvent | SetInputValueEvent | ErrorEvent;
+export type Event = AddConnectionEvent | RemoveConnectionEvent | UpdateConnectionTypeEvent | UpdateSelectedTypeEvent | SetInputValueEvent | ErrorEvent;
 
 export interface EventNameAnd<T> {
     addConnection: T
-    updateConnection: T
+    updateConnectionType: T
+    updateSelectedType: T
     removeConnection: T
     setInputValue: T
     error: T

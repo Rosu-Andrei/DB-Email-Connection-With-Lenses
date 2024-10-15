@@ -6,9 +6,9 @@ import {
     addConnectionEventProcessor,
     removeConnectionEventProcessor,
     EventProcessors,
-    lastEvent,
+    events,
     processEvent,
-    setInputValueEventProcessor
+    setInputValueEventProcessor, updateConnectionTypeEventProcessor, updateSelectedTypeEventProcessor
 } from "./events/event.processors";
 import { AddConnectionEvent, RemoveConnectionEvent, Event } from "./events/events";
 
@@ -16,18 +16,17 @@ export type AppState = {
     connections: { [key: string]: any };
 };
 
-
 const eventProcessor: EventProcessors<AppState> = {
     processors: {
         addConnection: addConnectionEventProcessor,
-        updateConnection: async (p, e, s) => s, // placeholder for later
+        updateConnectionType: updateConnectionTypeEventProcessor,
+        updateSelectedType: updateSelectedTypeEventProcessor,
         removeConnection: removeConnectionEventProcessor,
         setInputValue: setInputValueEventProcessor,
-        error: async (p, e, s) => s,
+        error: async (p, e, s) => s, //placeholder for later
     },
     parseLens: pathToLens()
 };
-
 
 function App() {
     const [state, setState] = useState<AppState>({ connections: {} });
@@ -48,7 +47,7 @@ function App() {
 
         const event: AddConnectionEvent = {
             event: 'addConnection',
-            path: 'connection',
+            path: 'connections',
             connectionId: id,
             connectionType: initialConnectionType,
         };
@@ -59,7 +58,7 @@ function App() {
     const removeConnection = (id: string) => {
         const event : RemoveConnectionEvent = {
             event: 'removeConnection',
-            path: 'connection',
+            path: 'connections',
             connectionId: id
         }
 
@@ -83,7 +82,6 @@ function App() {
                         key={id}
                         id={id}
                         s={state}
-                        // setS={setState}
                         handleEvent={handleEvent}
                         lens={connectionLens}
                         removeConnection={removeConnection}
@@ -93,9 +91,8 @@ function App() {
 
             <h2>Events Log</h2>
             <pre style={{backgroundColor: '#f0f0f0', padding: '10px'}}>
-                { JSON.stringify(lastEvent) }
+                {events.map((event) => JSON.stringify(event)).join('\n')}
             </pre>
-
         </div>
 
 
