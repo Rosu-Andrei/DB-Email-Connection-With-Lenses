@@ -5,7 +5,6 @@ import {Event} from "../events/events"
 
 interface FormWithArrayProps<S> {
     s: S;
-   // setS: (s: S) => void;
     lens: LensAndPath<S, any>;
     dynamicProps: Array<any>;
     handleEvent: (event: Event) => void;
@@ -19,9 +18,6 @@ export const FormWithArray = <S,>({
                                   }: FormWithArrayProps<S>) => {
     const formData = lens.get(s) || {};
 
-  /*  const handleChange = (newData: any) => {
-        setS(lens.set(s, newData));
-    };*/
     return (
         <div>
             {arrayToObj<any>(dynamicProps, formData, handleEvent, lens)}

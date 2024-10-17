@@ -7,10 +7,12 @@ import {
     removeConnectionEventProcessor,
     EventProcessors,
     processEvent,
-    setValueEventProcessor
+    setValueEventProcessor,
+    appendValueEventProcessor
 } from "./events/event.processors";
-import { AddConnectionEvent, RemoveConnectionEvent, Event } from "./events/events";
+import {RemoveConnectionEvent, Event, AppendValueEvent} from "./events/events";
 import {DisplayEvents, EventStore} from "./events/event.store";
+import {dbDef} from "./utils/component.prop";
 
 export type AppState = {
     connections: { [key: string]: any };
@@ -21,6 +23,7 @@ const eventProcessor: EventProcessors<AppState> = {
         addConnection: addConnectionEventProcessor,
         removeConnection: removeConnectionEventProcessor,
         setValue: setValueEventProcessor,
+        appendValue: appendValueEventProcessor,
         error: async (p, e, s) => s, // Placeholder for error handling
     },
     parseLens: pathToLens(),
@@ -44,14 +47,21 @@ function App() {
         const id = Date.now().toString();
         const initialConnectionType: 'db' | 'email' = 'db';
 
-        const event: AddConnectionEvent = {
-            event: 'addConnection',
+        const event: AppendValueEvent = {
+            event: 'appendValue',
             path: 'connections',
             connectionId: id,
-            connectionType: initialConnectionType,
+            value: {
+                [id]: {
+                    connectionType: initialConnectionType,
+                    selectedType: 'mysql',
+                    dynamicProps: dbDef.find((d) => d.name.toLowerCase() === 'mysql')?.render || [],
+                    formData: {}
+                }
+            }
         };
 
-       handleEvent(event);
+        handleEvent(event);
     };
 
     const removeConnection = (id: string) => {

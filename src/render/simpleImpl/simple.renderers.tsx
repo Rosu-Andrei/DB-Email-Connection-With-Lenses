@@ -33,7 +33,17 @@ export const renderStringInput: FieldRenderer = <T,>(
             id={id as string}
             name={id as string}
             value={value[id] as string}
-            onChange={onChange}
+            onBlur={onChange}
+            onKeyDown={e => {
+                if (e.key === "Enter") {
+                    onChange({
+                        target: {
+                            value: (e.target as HTMLInputElement).value,
+                            name: id as string
+                        }
+                    } as unknown as React.ChangeEvent<HTMLInputElement>);
+                }
+            }}
         />
     );
 };
@@ -51,7 +61,17 @@ export const renderNumberInput: FieldRenderer = <T,>(
             id={id as string}
             name={id as string}
             value={value[id] as string}
-            onChange={onChange}
+            onBlur={onChange}
+            onKeyDown={e => {
+                if (e.key === "Enter") {
+                    onChange({
+                        target: {
+                            value: (e.target as HTMLInputElement).value,
+                            name: id as string
+                        }
+                    } as unknown as React.ChangeEvent<HTMLInputElement>);
+                }
+            }}
         />
     );
 };
@@ -70,7 +90,17 @@ export const renderPasswordInput: FieldRenderer = <T,>(
             id={id as string}
             name={id as string}
             value={value[id] as string}
-            onChange={onChange}
+            onBlur={onChange}
+            onKeyDown={e => {
+                if (e.key === "Enter") {
+                    onChange({
+                        target: {
+                            value: (e.target as HTMLInputElement).value,
+                            name: id as string
+                        }
+                    } as unknown as React.ChangeEvent<HTMLInputElement>);
+                }
+            }}
         />
     );
 };

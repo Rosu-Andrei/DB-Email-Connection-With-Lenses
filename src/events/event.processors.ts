@@ -5,7 +5,7 @@ import {
     Event,
     ErrorEvent,
     RemoveConnectionEvent,
-    SetValueEvent,
+    SetValueEvent, AppendValueEvent,
 } from "./events";
 import {dbDef, emailDef} from "../utils/component.prop";
 import {AppState} from "../App";
@@ -17,6 +17,26 @@ export type EventProcessorFn<S, E extends BaseEvent> = (p: EventProcessors<S>, e
 export interface EventProcessors<S> {
     processors: EventNameAnd<EventProcessorFn<S, any>>
     parseLens: PathToLensFn<S>
+}
+
+
+// Utility function to compact events
+function compactEvents(events: Event[]): Event[] {
+    const uniqueEvents = new Map<string, Event>();
+
+    // Iterate through events and store only the most recent event for each path
+    for (const event of events) {
+        if (event.event === 'setValue') {
+            // Replace previous events for the same path with the latest one
+            uniqueEvents.set(event.path, event);
+        } else {
+            // For other types of events, keep them all (you may adjust this if necessary)
+            uniqueEvents.set(`${event.event}:${event.path}`, event);
+        }
+    }
+
+    // Return the compacted array of events
+    return Array.from(uniqueEvents.values());
 }
 
 export const addConnectionEventProcessor: EventProcessorFn<AppState, AddConnectionEvent> = async (processor, event, state, setEvents) => {
@@ -59,11 +79,28 @@ export const removeConnectionEventProcessor: EventProcessorFn<AppState, RemoveCo
     return newState;
 };
 
-export const setValueEventProcessor: EventProcessorFn<AppState, SetValueEvent> = async (processor, event, state, setEvents) => {
+export const appendValueEventProcessor: EventProcessorFn<AppState, AppendValueEvent> = async (processor, event, state, setEvents) => {
     let lens = processor.parseLens(event.path);
+    let value = lens.getOption(state);
+
+    if (typeof value !== 'object' || value === null) {
+        throw new Error(`Cannot append to non-object at ${event.path}. Value at that location is ${JSON.stringify(value)}`);
+    }
 
     setEvents((prevStore) => ({
         events: [...prevStore.events, event],
+    }));
+
+    return lens.set(state, { ...value, ...event.value });
+};
+
+
+export const setValueEventProcessor: EventProcessorFn<AppState, SetValueEvent> = async (processor, event, state, setEvents) => {
+    let lens = processor.parseLens(event.path);
+
+    // Update the event store with the new event, then compact
+    setEvents((prevStore) => ({
+        events: compactEvents([...prevStore.events, event]), // Compact after adding the new event
     }));
 
     return lens.set(state, event.value);
