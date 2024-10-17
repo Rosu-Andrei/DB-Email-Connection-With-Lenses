@@ -1,7 +1,7 @@
 import React from 'react';
 import { getRender, RenderDef } from './simpleImpl/simple.renderers';
 import { LensAndPath } from '../utils/lens';
-import {SetInputValueEvent, Event} from "../events/events";
+import {SetValueEvent, Event} from "../events/events";
 
 interface FieldWithLensProps<T> {
     id: keyof T; // path[] of the lens
@@ -20,8 +20,8 @@ export const FieldWithLens = <T,>({
                                   }: FieldWithLensProps<T>) => {
     const fieldValue = lens.get(obj);
     const handleChange = (newValue: any) => {
-        const event: SetInputValueEvent = {
-            event: 'setInputValue',
+        const event: SetValueEvent = {
+            event: 'setValue',
             path: lens.path.join('.'),
             connectionId: obj.id,
             value: newValue,

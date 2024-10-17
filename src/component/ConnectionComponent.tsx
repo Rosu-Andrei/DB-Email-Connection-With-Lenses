@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { LensAndPath, LensBuilder } from '../utils/lens';
 import { dbDef, ConnectionDef, emailDef } from '../utils/component.prop';
 import { FormWithArray } from './FormWithArray';
-import {Event, UpdateConnectionTypeEvent, UpdateSelectedTypeEvent} from "../events/events";
+import { Event, SetValueEvent } from "../events/events";
 
 type ConnectionComponentProps<S> = {
     id: string;
@@ -32,23 +32,40 @@ export function ConnectionComponent<S>({
 
     // Update functions
     const updateConnectionType = (value: 'db' | 'email') => {
-        const event: UpdateConnectionTypeEvent = {
-            event: 'updateConnectionType',
-            path: 'type',
-            connectionId: id,
+        // Create a new connection object with updated values
+        const defs = value === 'db' ? dbDef : emailDef;
+        const initialSelectedType = defs[0].name.toLowerCase();
+        const def = defs.find((d) => d.name.toLowerCase() === initialSelectedType);
+
+        const updatedConnection = {
             connectionType: value,
+            selectedType: initialSelectedType,
+            dynamicProps: def ? def.render : [],
+            formData: {},
+        };
+
+        const event: SetValueEvent = {
+            event: 'setValue',
+            path: `connections.${id}`,
+            value: updatedConnection,
         };
 
         handleEvent(event);
     };
 
     const updateSelectedType = (value: string, defs: ConnectionDef[]) => {
-        const event: UpdateSelectedTypeEvent = {
-            event: 'updateSelectedType',
-            path: 'type',
-            connectionId: id,
+        const def = defs.find((d) => d.name.toLowerCase() === value);
+
+        const updatedConnection = {
             selectedType: value,
-            defs: defs,
+            dynamicProps: def ? def.render : [],
+            formData: {},
+        };
+
+        const event: SetValueEvent = {
+            event: 'setValue',
+            path: `connections.${id}`,
+            value: updatedConnection,
         };
 
         handleEvent(event);
@@ -60,15 +77,7 @@ export function ConnectionComponent<S>({
             const defs = connectionType === 'db' ? dbDef : emailDef;
             const initialSelectedType = defs[0].name.toLowerCase();
 
-            const event: UpdateSelectedTypeEvent = {
-                event: 'updateSelectedType',
-                path: 'type',
-                connectionId: id,
-                selectedType: initialSelectedType,
-                defs: defs,
-            };
-
-            handleEvent(event);
+            updateSelectedType(initialSelectedType, defs);
         }
     }, [connectionType]);
 

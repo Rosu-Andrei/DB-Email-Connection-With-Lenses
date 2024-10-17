@@ -7,7 +7,7 @@ import {
     removeConnectionEventProcessor,
     EventProcessors,
     processEvent,
-    setInputValueEventProcessor, updateConnectionTypeEventProcessor, updateSelectedTypeEventProcessor
+    setValueEventProcessor
 } from "./events/event.processors";
 import { AddConnectionEvent, RemoveConnectionEvent, Event } from "./events/events";
 import {DisplayEvents, EventStore} from "./events/event.store";
@@ -19,13 +19,11 @@ export type AppState = {
 const eventProcessor: EventProcessors<AppState> = {
     processors: {
         addConnection: addConnectionEventProcessor,
-        updateConnectionType: updateConnectionTypeEventProcessor,
-        updateSelectedType: updateSelectedTypeEventProcessor,
         removeConnection: removeConnectionEventProcessor,
-        setInputValue: setInputValueEventProcessor,
-        error: async (p, e, s) => s, //placeholder for later
+        setValue: setValueEventProcessor,
+        error: async (p, e, s) => s, // Placeholder for error handling
     },
-    parseLens: pathToLens()
+    parseLens: pathToLens(),
 };
 
 function App() {

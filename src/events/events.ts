@@ -1,6 +1,11 @@
-import {ConnectionDef} from "../utils/component.prop";
+// events.ts
+import { ConnectionDef } from "../utils/component.prop";
 
-export type EventType = 'addConnection' | 'removeConnection' | 'updateConnectionType' | 'updateSelectedType' | 'setInputValue' | 'error';
+export type EventType =
+    | 'addConnection'
+    | 'removeConnection'
+    | 'setValue'
+    | 'error';
 
 export interface BaseEvent {
     path: string;
@@ -18,24 +23,11 @@ export interface RemoveConnectionEvent extends BaseEvent {
     connectionId: string;
 }
 
-export interface UpdateConnectionTypeEvent extends BaseEvent {
-    event: 'updateConnectionType';
-    connectionId: string;
-    connectionType: 'db' | 'email';
-}
-
-export interface UpdateSelectedTypeEvent extends BaseEvent {
-    event: 'updateSelectedType';
-    connectionId: string;
-    selectedType: string;
-    defs?: ConnectionDef[];
-}
-
-export interface SetInputValueEvent extends BaseEvent {
-    event: 'setInputValue';
-    connectionId: string;
-    fieldName: string;
-    value: any;
+export interface SetValueEvent extends BaseEvent {
+    event: 'setValue';
+    connectionId?: string;
+    fieldName?: string;
+    value: Value;
 }
 
 export interface ErrorEvent extends BaseEvent {
@@ -43,13 +35,44 @@ export interface ErrorEvent extends BaseEvent {
     error: string;
 }
 
-export type Event = AddConnectionEvent | RemoveConnectionEvent | UpdateConnectionTypeEvent | UpdateSelectedTypeEvent | SetInputValueEvent | ErrorEvent;
+export type Event =
+    | AddConnectionEvent
+    | RemoveConnectionEvent
+    | SetValueEvent
+    | ErrorEvent;
 
 export interface EventNameAnd<T> {
-    addConnection: T
-    updateConnectionType: T
-    updateSelectedType: T
-    removeConnection: T
-    setInputValue: T
-    error: T
+    addConnection: T;
+    removeConnection: T;
+    setValue: T;
+    error: T;
+}
+
+export type Value = string | SelectedType | ConnectionType;
+
+export interface ConnectionType extends SelectedType {
+    connectionType: string;
+}
+
+export interface SelectedType {
+    selectedType: string;
+    dynamicProps: any[];
+    formData: {};
+}
+
+export function isSelectedType(value: any): value is SelectedType {
+    return (
+        value &&
+        typeof value === 'object' &&
+        'selectedType' in value &&
+        'dynamicProps' in value &&
+        'formData' in value
+    );
+}
+
+export function isConnectionType(value: any): value is ConnectionType {
+    return (
+        isSelectedType(value) &&
+        'connectionType' in value
+    );
 }

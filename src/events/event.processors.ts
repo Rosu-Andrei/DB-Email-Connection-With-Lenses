@@ -5,7 +5,7 @@ import {
     Event,
     ErrorEvent,
     RemoveConnectionEvent,
-    SetInputValueEvent, UpdateConnectionTypeEvent, UpdateSelectedTypeEvent
+    SetValueEvent,
 } from "./events";
 import {dbDef, emailDef} from "../utils/component.prop";
 import {AppState} from "../App";
@@ -45,49 +45,6 @@ export const addConnectionEventProcessor: EventProcessorFn<AppState, AddConnecti
     return newState;
 };
 
-export const updateConnectionTypeEventProcessor: EventProcessorFn<
-    AppState,
-    UpdateConnectionTypeEvent> = async (processor, event, state, setEvents) => {
-    const { connectionId, connectionType } = event;
-    const connectionLens = processor.parseLens(`connections.${connectionId}`);
-
-    // Update the connectionType
-    let newState = connectionLens.focusOn('connectionType').set(state, connectionType);
-
-    // Reset selectedType, dynamicProps, and formData
-    newState = connectionLens.focusOn('selectedType').set(newState, '');
-    newState = connectionLens.focusOn('dynamicProps').set(newState, []);
-    newState = connectionLens.focusOn('formData').set(newState, {});
-
-    setEvents((prevStore) => ({
-        events: [...prevStore.events, event],
-    }));
-
-    return newState;
-};
-
-
-export const updateSelectedTypeEventProcessor: EventProcessorFn<
-    AppState,
-    UpdateSelectedTypeEvent> = async (processor, event, state, setEvents) => {
-    const { connectionId, selectedType, defs } = event;
-    const connectionLens = processor.parseLens(`connections.${connectionId}`);
-
-    let newState = connectionLens.focusOn('selectedType').set(state, selectedType);
-
-    const def = defs?.find((d) => d.name.toLowerCase() === selectedType);
-    newState = connectionLens.focusOn('dynamicProps').set(newState, def ? def.render : []);
-    newState = connectionLens.focusOn('formData').set(newState, {});
-
-    const { defs: _, ...eventWithoutDefs } = event;
-    setEvents((prevStore) => ({
-        events: [...prevStore.events, eventWithoutDefs],
-    }));
-
-    return newState;
-};
-
-
 export const removeConnectionEventProcessor: EventProcessorFn<AppState, RemoveConnectionEvent> = async (processor, event, state, setEvents) => {
     const { connectionId } = event;
     const { [connectionId]: _, ...restConnections } = state.connections;
@@ -102,8 +59,9 @@ export const removeConnectionEventProcessor: EventProcessorFn<AppState, RemoveCo
     return newState;
 };
 
-export const setInputValueEventProcessor: EventProcessorFn<AppState, SetInputValueEvent> = async (processor, event, state, setEvents) => {
+export const setValueEventProcessor: EventProcessorFn<AppState, SetValueEvent> = async (processor, event, state, setEvents) => {
     let lens = processor.parseLens(event.path);
+
     setEvents((prevStore) => ({
         events: [...prevStore.events, event],
     }));
