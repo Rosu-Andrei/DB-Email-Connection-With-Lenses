@@ -1,46 +1,26 @@
 import React, { useState } from 'react';
 import './App.css';
-import { lensBuilder, pathToLens } from './utils/lens';
+import { lensBuilder } from './utils/lens';
 import { ConnectionComponent } from './component/ConnectionComponent';
-import {
-    addConnectionEventProcessor,
-    removeConnectionEventProcessor,
-    EventProcessors,
-    processEvent,
-    setValueEventProcessor,
-    appendValueEventProcessor
-} from "./events/event.processors";
+import { oneProcessor } from "./events/event.processors";
 import {RemoveConnectionEvent, Event, AppendValueEvent} from "./events/events";
 import {DisplayEvents, EventStore} from "./events/event.store";
 import {dbDef} from "./utils/component.prop";
 
 export type AppState = {
-    connections: { [key: string]: any };
-};
-
-const eventProcessor: EventProcessors<AppState> = {
-    processors: {
-        addConnection: addConnectionEventProcessor,
-        removeConnection: removeConnectionEventProcessor,
-        setValue: setValueEventProcessor,
-        appendValue: appendValueEventProcessor,
-        error: async (p, e, s) => s, // Placeholder for error handling
-    },
-    parseLens: pathToLens(),
+    connections: any[];
 };
 
 function App() {
-    const [state, setState] = useState<AppState>({ connections: {} });
+    const [state, setState] = useState<AppState>({ connections: [] });
     const [events, setEvents] = useState<EventStore>({ events: [] });
 
     const handleEvent = <E extends Event>(event: E) => {
-        processEvent(eventProcessor, state, event, setEvents).then((result) => {
-            if (result.errors.length > 0) {
-                console.error(result.errors);
-            } else if (result.state) {
-                setState(result.state);
-            }
-        });
+        const newState = oneProcessor(state, event) as AppState;
+        setState(newState);
+        setEvents((prevStore) => ({
+            events:[...prevStore.events, event],
+        }));
     };
 
     const addConnection = () => {
@@ -49,27 +29,25 @@ function App() {
 
         const event: AppendValueEvent = {
             event: 'appendValue',
-            path: 'connections',
+            path: `connections`,
             connectionId: id,
             value: {
-                [id]: {
-                    connectionType: initialConnectionType,
-                    selectedType: 'mysql',
-                    dynamicProps: dbDef.find((d) => d.name.toLowerCase() === 'mysql')?.render || [],
-                    formData: {}
-                }
+                id: id,
+                connectionType: initialConnectionType,
+                selectedType: 'mysql',
+                dynamicProps: dbDef.find((d) => d.name.toLowerCase() === 'mysql')?.render || [],
+                formData: {}
             }
         };
-
         handleEvent(event);
     };
 
     const removeConnection = (id: string) => {
-        const event : RemoveConnectionEvent = {
+        const event: RemoveConnectionEvent = {
             event: 'removeConnection',
             path: 'connections',
-            connectionId: id
-        }
+            connectionId: id,
+        };
 
         handleEvent(event);
     };
@@ -80,16 +58,16 @@ function App() {
                 +
             </button>
 
-            {Object.keys(state.connections).map((id) => {
+            {state.connections.map((connection, index) => {
                 const connectionLens = lensBuilder<AppState>()
-                    .focusOn('connections')
-                    .focusOn(id)
+                    .focuson('connections')
+                    .focuson(index) // Use index for array
                     .build();
 
                 return (
                     <ConnectionComponent
-                        key={id}
-                        id={id}
+                        index={index}
+                        id={connection.id}
                         s={state}
                         handleEvent={handleEvent}
                         lens={connectionLens}
@@ -98,9 +76,27 @@ function App() {
                 );
             })}
 
+            <pre>
+                {
+                    JSON.stringify(state, null, 2)
+                }
+            </pre>
             <DisplayEvents events={events.events} />
+
         </div>
     );
 }
 
 export default App;
+
+
+// const eventProcessor: EventProcessors<AppState> = {
+//     processors: {
+//         //addConnection: addConnectionEventProcessor,
+//         removeConnection: removeConnectionEventProcessor,
+//         setValue: setValueEventProcessor,
+//         appendValue: appendValueEventProcessor,
+//         error: async (p, e, s) => s, // Placeholder for error handling
+//     },
+//     parseLens: pathToLens(),
+// };

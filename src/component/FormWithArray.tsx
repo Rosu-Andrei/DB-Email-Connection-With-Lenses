@@ -1,11 +1,11 @@
 import React from 'react';
-import { LensAndPath } from '../utils/lens';
+import { LensWithPath } from '../utils/lens';
 import {arrayToObj} from "../render/display.from.array";
 import {Event} from "../events/events"
 
 interface FormWithArrayProps<S> {
     s: S;
-    lens: LensAndPath<S, any>;
+    lens: LensWithPath<S, any>;
     dynamicProps: Array<any>;
     handleEvent: (event: Event) => void;
 }

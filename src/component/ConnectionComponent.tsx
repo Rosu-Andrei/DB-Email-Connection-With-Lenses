@@ -1,18 +1,20 @@
 import React, { useEffect } from 'react';
-import { LensAndPath, LensBuilder } from '../utils/lens';
+import { LensWithPath, LensBuilder } from '../utils/lens';
 import { dbDef, ConnectionDef, emailDef } from '../utils/component.prop';
 import { FormWithArray } from './FormWithArray';
 import { Event, SetValueEvent } from "../events/events";
 
 type ConnectionComponentProps<S> = {
+    index: number;
     id: string;
     s: S;
     handleEvent: (event: Event) => void;
-    lens: LensAndPath<S, any>;
+    lens: LensWithPath<S, any>;
     removeConnection: (id: string) => void;
 };
 
 export function ConnectionComponent<S>({
+                                           index,
                                            id,
                                            s,
                                            lens,
@@ -21,10 +23,10 @@ export function ConnectionComponent<S>({
                                        }: ConnectionComponentProps<S>) {
     // Use LensBuilder to create lenses
     const lensBuilder = new LensBuilder(lens);
-    const connectionTypeLens = lensBuilder.focusOn('connectionType').build();
-    const selectedTypeLens = lensBuilder.focusOn('selectedType').build();
-    const dynamicPropsLens = lensBuilder.focusOn('dynamicProps').build();
-    const formDataLens = lensBuilder.focusOn('formData').build();
+    const connectionTypeLens = lensBuilder.focuson('connectionType').build();
+    const selectedTypeLens = lensBuilder.focuson('selectedType').build();
+    const dynamicPropsLens = lensBuilder.focuson('dynamicProps').build();
+    const formDataLens = lensBuilder.focuson('formData').build();
 
     const connectionType = connectionTypeLens.get(s) || 'db';
     const selectedType = selectedTypeLens.get(s) || '';
@@ -46,7 +48,7 @@ export function ConnectionComponent<S>({
 
         const event: SetValueEvent = {
             event: 'setValue',
-            path: `connections.${id}`,
+            path: `connections.${index}`,
             value: updatedConnection,
         };
 
@@ -64,7 +66,7 @@ export function ConnectionComponent<S>({
 
         const event: SetValueEvent = {
             event: 'setValue',
-            path: `connections.${id}`,
+            path: `connections.${index}`,
             value: updatedConnection,
         };
 
@@ -113,7 +115,7 @@ export function ConnectionComponent<S>({
                     <FormWithArray
                         s={s}
                         handleEvent={handleEvent}
-                        lens={lensBuilder.focusOn('formData').build()}
+                        lens={lensBuilder.focuson('formData').build()}
                         dynamicProps={dynamicProps}
                     />
                 </div>
@@ -134,7 +136,7 @@ export function ConnectionComponent<S>({
                     <FormWithArray
                         s={s}
                         handleEvent={handleEvent}
-                        lens={lensBuilder.focusOn('formData').build()}
+                        lens={lensBuilder.focuson('formData').build()}
                         dynamicProps={dynamicProps}
                     />
                 </div>

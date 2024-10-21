@@ -1,4 +1,4 @@
-import {parseLens, composeLens, LensAndPath} from '../utils/lens';
+import {parseLens, LensWithPath, composeLens} from '../utils/lens';
 import { RenderDef } from './simpleImpl/simple.renderers';
 import React from 'react';
 import { FieldWithLens} from "./field.with.lense";
@@ -8,7 +8,7 @@ export const arrayToObj = <Main extends any>(
     list: any[],
     obj: Main,
     handleEvent: (event: Event) => void,
-    baseLens?: LensAndPath<any, Main>
+    baseLens?: LensWithPath<any, Main>
 ) => {
     return list.map((item, index) => {
         if (typeof item === 'string') {

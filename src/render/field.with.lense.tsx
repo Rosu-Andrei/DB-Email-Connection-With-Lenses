@@ -1,12 +1,12 @@
 import React from 'react';
 import { getRender, RenderDef } from './simpleImpl/simple.renderers';
-import { LensAndPath } from '../utils/lens';
+import { LensWithPath } from '../utils/lens';
 import {SetValueEvent, Event} from "../events/events";
 
 interface FieldWithLensProps<T> {
     id: keyof T; // path[] of the lens
     renderer: RenderDef;
-    lens: LensAndPath<any, any>;
+    lens: LensWithPath<any, any>;
     obj: any;
     handleEvent: (event: Event) => void;
 }
