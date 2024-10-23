@@ -19,6 +19,7 @@ export type DatabaseProviderProp = {
 
 export function DatabaseTypeProvider(prop: DatabaseProviderProp) {
 
+    //the context of the database is used  in order to know (at any level) which database we use
     const {children, databaseType = databases[0]} = prop;
     return (
         <dbTypeContext.Provider value={databaseType}>

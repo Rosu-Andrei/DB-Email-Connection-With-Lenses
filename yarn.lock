@@ -1860,6 +1860,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@focuson/lens@npm:^1.44.3":
+  version: 1.44.3
+  resolution: "@focuson/lens@npm:1.44.3"
+  dependencies:
+    "@focuson/utils": "npm:1.44.3"
+    debug: "npm:^4.3.4"
+  checksum: dd944c8f1a8ee3876c5ea343dcf7d1276c1f908a7ecceaeb7706afb5440d67faa88a3627e4bf51a38ccc8704c2aff832eae571d31c9a9186c1878e488f46b909
+  languageName: node
+  linkType: hard
+
+"@focuson/utils@npm:1.44.3":
+  version: 1.44.3
+  resolution: "@focuson/utils@npm:1.44.3"
+  dependencies:
+    debug: "npm:^4.3.4"
+    node-fetch: "npm:2.6.1"
+  checksum: 58245e7f1fc84aa2627dfa385610cbd702a93bd85b2b020751457c1465375b9926a223aa6404f229e4ce75ac094f71c1a5644a1cde4a818fe711a81915058240
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.13.0":
   version: 0.13.0
   resolution: "@humanwhocodes/config-array@npm:0.13.0"
@@ -7859,6 +7879,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "itsm-sql-email-lens@workspace:."
   dependencies:
+    "@focuson/lens": "npm:^1.44.3"
     "@testing-library/jest-dom": "npm:^5.14.1"
     "@testing-library/react": "npm:^13.0.0"
     "@testing-library/user-event": "npm:^13.2.1"
@@ -9407,6 +9428,13 @@ __metadata:
     lower-case: "npm:^2.0.2"
     tslib: "npm:^2.0.3"
   checksum: 8ef545f0b3f8677c848f86ecbd42ca0ff3cd9dd71c158527b344c69ba14710d816d8489c746b6ca225e7b615108938a0bda0a54706f8c255933703ac1cf8e703
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:2.6.1":
+  version: 2.6.1
+  resolution: "node-fetch@npm:2.6.1"
+  checksum: c58586d121782df045681e29608f940be90c7d8c4cada29957c148cfcc5e2d81d74b690cf10ee6879ed055da7ea821450a74ff43f3bde651cf6c8a5f34a77e2a
   languageName: node
   linkType: hard
 

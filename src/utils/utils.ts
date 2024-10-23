@@ -13,3 +13,15 @@ export function mapKeys<T extends object, T1>(obj: T,
      */
     return Object.keys(obj).map((key) => fn(key as keyof T));
 }
+
+export function buildPath(...segments: (string | number)[]): string {
+    return segments
+        .map((segment, index) => {
+            if (typeof segment === 'number') {
+                return `[${segment}]`;
+            } else {
+                return index === 0 ? segment : `.${segment}`;
+            }
+        })
+        .join('');
+}

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {ConnectionDef} from "../utils/db.component.prop";
+import {ConnectionDef} from "../utils/component.prop";
 
 /**
  * This hook manages the selected type (database or email) and the dynamic properties
