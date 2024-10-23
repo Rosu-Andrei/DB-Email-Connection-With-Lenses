@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { LensWithPath, LensBuilder } from '../utils/lens';
 import { dbDef, ConnectionDef, emailDef } from '../utils/component.prop';
 import { FormWithArray } from './FormWithArray';
-import { Event, SetValueEvent } from "../events/events";
+import { SetValueEvent } from '../events/events';
+import { useStateOps } from '../context/state.context';
+import { buildPath } from "../utils/utils";
 
 type ConnectionComponentProps<S> = {
     index: number;
     id: string;
-    s: S;
-    handleEvent: (event: Event) => void;
     lens: LensWithPath<S, any>;
     removeConnection: (id: string) => void;
 };
@@ -16,11 +16,11 @@ type ConnectionComponentProps<S> = {
 export function ConnectionComponent<S>({
                                            index,
                                            id,
-                                           s,
                                            lens,
-                                           handleEvent,
                                            removeConnection,
                                        }: ConnectionComponentProps<S>) {
+    const { state, handleEvent } = useStateOps<S>();
+
     // Use LensBuilder to create lenses
     const lensBuilder = new LensBuilder(lens);
     const connectionTypeLens = lensBuilder.focuson('connectionType').build();
@@ -28,9 +28,9 @@ export function ConnectionComponent<S>({
     const dynamicPropsLens = lensBuilder.focuson('dynamicProps').build();
     const formDataLens = lensBuilder.focuson('formData').build();
 
-    const connectionType = connectionTypeLens.get(s) || 'db';
-    const selectedType = selectedTypeLens.get(s) || '';
-    const dynamicProps = dynamicPropsLens.get(s) || [];
+    const connectionType = connectionTypeLens.get(state) || 'db';
+    const selectedType = selectedTypeLens.get(state) || '';
+    const dynamicProps = dynamicPropsLens.get(state) || [];
 
     // Update functions
     const updateConnectionType = (value: 'db' | 'email') => {
@@ -48,7 +48,7 @@ export function ConnectionComponent<S>({
 
         const event: SetValueEvent = {
             event: 'setValue',
-            path: `connections.${index}`,
+            path: buildPath('connections', index),
             value: updatedConnection,
         };
 
@@ -66,12 +66,28 @@ export function ConnectionComponent<S>({
 
         const event: SetValueEvent = {
             event: 'setValue',
-            path: `connections.${index}`,
+            path: buildPath('connections', index),
             value: updatedConnection,
         };
 
         handleEvent(event);
     };
+
+    const renderConnectionTypeSection = (defs: ConnectionDef[], selectedType: string) => (
+        <div>
+            <select value={selectedType} onChange={(e) => updateSelectedType(e.target.value, defs)}>
+                {defs.map((def) => (
+                    <option key={def.name} value={def.name.toLowerCase()}>
+                        {def.name}
+                    </option>
+                ))}
+            </select>
+            <FormWithArray
+                lens={lensBuilder.focuson('formData').build()}
+                dynamicProps={dynamicProps}
+            />
+        </div>
+    );
 
     // useEffect to set default selectedType and dynamicProps when component mounts or connectionType changes
     useEffect(() => {
@@ -99,48 +115,9 @@ export function ConnectionComponent<S>({
                 <option value="email">Email Connection</option>
             </select>
 
-            {/* Provider Type Selector and Form */}
-            {connectionType === 'db' && (
-                <div>
-                    <select
-                        value={selectedType}
-                        onChange={(e) => updateSelectedType(e.target.value, dbDef)}
-                    >
-                        {dbDef.map((def) => (
-                            <option key={def.name} value={def.name.toLowerCase()}>
-                                {def.name}
-                            </option>
-                        ))}
-                    </select>
-                    <FormWithArray
-                        s={s}
-                        handleEvent={handleEvent}
-                        lens={lensBuilder.focuson('formData').build()}
-                        dynamicProps={dynamicProps}
-                    />
-                </div>
-            )}
-
-            {connectionType === 'email' && (
-                <div>
-                    <select
-                        value={selectedType}
-                        onChange={(e) => updateSelectedType(e.target.value, emailDef)}
-                    >
-                        {emailDef.map((def) => (
-                            <option key={def.name} value={def.name.toLowerCase()}>
-                                {def.name}
-                            </option>
-                        ))}
-                    </select>
-                    <FormWithArray
-                        s={s}
-                        handleEvent={handleEvent}
-                        lens={lensBuilder.focuson('formData').build()}
-                        dynamicProps={dynamicProps}
-                    />
-                </div>
-            )}
+            {/* Render the connection type section */}
+            {(connectionType === 'db' || connectionType === 'email') &&
+                renderConnectionTypeSection(connectionType === 'db' ? dbDef : emailDef, selectedType)}
         </div>
     );
 }

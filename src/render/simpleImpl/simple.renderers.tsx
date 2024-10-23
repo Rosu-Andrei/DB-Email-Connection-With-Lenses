@@ -1,14 +1,17 @@
 import React from "react";
 import {ObjectDef, renderGenericObject} from "../RenderObject";
+import {useStateOps} from "../../context/state.context";
+import {appendPath, lensFromPath} from "../../utils/lens";
 
 
 /**
  * a custom type for the input fields that keep repeating
  */
-export type fieldInputs<T, > = {
+export type fieldInputs<T> = {
     id: keyof T,
     value: T,
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void,
+    path: string
 }
 /**
  * We create a type for the functions that render our input fields, regardless of the type.
@@ -18,21 +21,25 @@ export type fieldInputs<T, > = {
  * The way it is written, FieldRenderer isn't generic itself. That (<T> (... means
  * that we specify the type only when calling the function.
  */
-export type FieldRenderer = <T, >(fieldInputs: fieldInputs<T>) => JSX.Element
+export type FieldRenderer = <T>(fieldInputs: fieldInputs<T>) => JSX.Element
 
 /**
  * an implementation of FieldRenderer that renders a text input
  */
 export const renderStringInput: FieldRenderer = <T,>(
-    fieldInputs: fieldInputs<T>
+    { id, value, onChange, path}: fieldInputs<T>
 ) => {
-    const { id, value, onChange } = fieldInputs;
+    const {state, handleEvent} = useStateOps<T>()
+    const lens = lensFromPath<T>(appendPath(path, id as string))
+    let initialState = lens.get(state);
+    const [text, setText] = React.useState(initialState);
     return (
         <input
             type="text"
             id={id as string}
             name={id as string}
-            value={value[id] as string}
+            value={text}
+            onChange={e => setText(e.target.value)}
             onBlur={onChange}
             onKeyDown={e => {
                 if (e.key === "Enter") {
@@ -54,13 +61,18 @@ export const renderStringInput: FieldRenderer = <T,>(
 export const renderNumberInput: FieldRenderer = <T,>(
     fieldInputs: fieldInputs<T>
 ) => {
-    const { id, value, onChange } = fieldInputs;
+    const { id, value, onChange, path } = fieldInputs;
+    const {state, handleEvent} = useStateOps<T>()
+    const lens = lensFromPath<T>(appendPath(path, id as string))
+    let initialState = lens.get(state);
+    const [text, setText] = React.useState(initialState);
     return (
         <input
             type="number"
             id={id as string}
             name={id as string}
-            value={value[id] as string}
+            value={text}
+            onChange={e => setText(e.target.value)}
             onBlur={onChange}
             onKeyDown={e => {
                 if (e.key === "Enter") {
@@ -83,13 +95,18 @@ export const renderNumberInput: FieldRenderer = <T,>(
 export const renderPasswordInput: FieldRenderer = <T,>(
     fieldInputs: fieldInputs<T>
 ) => {
-    const { id, value, onChange } = fieldInputs;
+    const { id, value, onChange, path } = fieldInputs;
+    const {state, handleEvent} = useStateOps<T>()
+    const lens = lensFromPath<T>(appendPath(path, id as string))
+    let initialState = lens.get(state);
+    const [text, setText] = React.useState(initialState);
     return (
         <input
             type="password"
             id={id as string}
             name={id as string}
-            value={value[id] as string}
+            value={text}
+            onChange={e => setText(e.target.value)}
             onBlur={onChange}
             onKeyDown={e => {
                 if (e.key === "Enter") {

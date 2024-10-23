@@ -38,32 +38,8 @@ export function oneProcessor<T>(start: Partial<T>, e: Event): Partial<T> {
     }
 }
 
-// export function eventProcessor<T>(events: Event[], start: Partial<T>): Partial<T> {
-//     return events.reduce((acc, e) => oneProcessor(acc, e), start)
-// }
-//
-// export type EventProcessorFn<S, E extends BaseEvent> = (p: EventProcessors<S>, event: E, s: S, setEvents: React.Dispatch<React.SetStateAction<EventStore>> ) => Promise<S>
-//
-// export interface EventProcessors<S> {
-//     processors: EventNameAnd<EventProcessorFn<S, any>>
-//     parseLens: PathToLensFn<S>
-// }
+export function eventProcessor<T>(events: Event[], start: Partial<T>): Partial<T> {
+    return events.reduce((acc, e) => oneProcessor(acc, e), start)
+}
 
-// export type EventProcessorResult<S> = {
-//     state?: S
-//     errors: ErrorEvent[]
-// }
-//
-// export async function processEvent<S>(processor: EventProcessors<S>, startState: S, event: Event, setEvents: React.Dispatch<React.SetStateAction<EventStore>>
-// ): Promise<EventProcessorResult<S>> {
-//     try {
-//         const processorFn: EventProcessorFn<S, any> = processor.processors[event.event]; // retrieves the specific processing function for the event
-//         if (!processorFn)
-//             return { errors: [{event: 'error', error: `No processor for event ${event.event}`, path: ''}]};
-//         const state = await processorFn(processor, event, startState, setEvents);
-//         return { state, errors: [] };
-//     } catch (e: any) {
-//         return { errors: [{event: 'error', error: `Error in processEvent ${e.message}`, path: ''}]};
-//     }
-// }
 

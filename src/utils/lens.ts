@@ -1,5 +1,3 @@
-import {Lenses, Optional} from "@focuson/lens";
-
 export type LensWithPath<Main, Child> = {
     path: string[]
     get: (m: Partial<Main>) => Child
@@ -13,6 +11,10 @@ export function identityLens<Main>(): LensWithPath<Main, Main> {
         get: (m: Partial<Main>) => m as Main,
         set: (m: Partial<Main>, c:Partial<Main> ) => c
     }
+}
+
+export function appendPath(path: string|undefined, id: string){
+    return (path?`${path}.${id}`:id)
 }
 
 /**
@@ -116,34 +118,3 @@ export function composeLens<Main, Intermediate, Child>(
         }
     };
 }
-// Compose two lenses into one
-// export function composeLens<Main, Child, GrandChild>(
-//     outerLens: LensWithPath<Main, Child>,
-//     innerLens: LensWithPath<Child, GrandChild>
-// ): LensWithPath<Main, GrandChild> {
-//     return {
-//         get: (main: Main) => {
-//             const child = outerLens.get(main);
-//             return child ? innerLens.get(child) : undefined;
-//         },
-//         set: (main: Main, grandChildValue: GrandChild) => {
-//             const child = outerLens.get(main) || ({} as Child);
-//             const updatedChild = innerLens.set(child, grandChildValue);
-//             return outerLens.set(main, updatedChild);
-//         },
-//         path: [...outerLens.path, ...innerLens.path],
-//     };
-// }
-//
-// export type PathToLensFn<S> = ( path: string ) => Optional<S, any>
-//
-// export function pathToLens<S> (): PathToLensFn<S> {
-//     return path => {
-//         const parts = path.split ( '.' ).map ( p => p.trim () ).filter ( p => p.length > 0 )
-//         let lens: Optional<S, S> = Lenses.identity<S> ()
-//         for ( let part of parts ) {
-//             lens = lens.focusQuery ( part as any ) as any
-//         }
-//         return lens
-//     }
-// }

@@ -1,26 +1,12 @@
 import React from 'react';
 import { LensWithPath } from '../utils/lens';
-import {arrayToObj} from "../render/display.from.array";
-import {Event} from "../events/events"
+import { arrayToObj } from '../render/display.from.array';
 
 interface FormWithArrayProps<S> {
-    s: S;
     lens: LensWithPath<S, any>;
     dynamicProps: Array<any>;
-    handleEvent: (event: Event) => void;
 }
 
-export const FormWithArray = <S,>({
-                                      s,
-                                      lens,
-                                      dynamicProps,
-                                      handleEvent
-                                  }: FormWithArrayProps<S>) => {
-    const formData = lens.get(s) || {};
-
-    return (
-        <div>
-            {arrayToObj<any>(dynamicProps, formData, handleEvent, lens)}
-        </div>
-    );
+export const FormWithArray = <S,>({ lens, dynamicProps }: FormWithArrayProps<S>) => {
+    return <div>{arrayToObj<any>(dynamicProps, lens)}</div>;
 };

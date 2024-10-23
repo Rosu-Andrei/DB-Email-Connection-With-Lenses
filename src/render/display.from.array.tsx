@@ -1,13 +1,10 @@
-import {parseLens, LensWithPath, composeLens} from '../utils/lens';
+import { parseLens, LensWithPath, composeLens } from '../utils/lens';
 import { RenderDef } from './simpleImpl/simple.renderers';
 import React from 'react';
-import { FieldWithLens} from "./field.with.lense";
-import {Event} from "../events/events"
+import { FieldWithLens } from './field.with.lense';
 
 export const arrayToObj = <Main extends any>(
     list: any[],
-    obj: Main,
-    handleEvent: (event: Event) => void,
     baseLens?: LensWithPath<any, Main>
 ) => {
     return list.map((item, index) => {
@@ -31,16 +28,11 @@ export const arrayToObj = <Main extends any>(
                 throw new Error(`Invalid type ${type}`);
             }
 
-            return (
-                <FieldWithLens
-                    key={index}
-                    id={path as keyof Main}
-                    renderer={renderer}
-                    lens={lens}
-                    obj={obj}
-                    handleEvent={handleEvent}
-                />
-            );
+            return <FieldWithLens
+                key={index}
+                renderer={renderer}
+                lens={lens} />;
+
         } else if (item.type) {
             if (item.type === 'title') {
                 return <h1 key={index}>{item.text}</h1>;
