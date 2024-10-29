@@ -3,7 +3,6 @@ import {AppendValueEvent, RemoveConnectionEvent} from "./events/events";
 import {dbDef} from "./utils/component.prop";
 import {lensBuilder} from "./utils/lens";
 import {ConnectionComponent} from "./component/ConnectionComponent";
-import {DisplayEvents} from "./events/event.store";
 import {AppState} from "./App";
 
 export function AppContent() {
@@ -64,7 +63,10 @@ export function AppContent() {
 
             <pre>{JSON.stringify(state, null, 2)}</pre>
 
-            <DisplayEvents events={events} />
+            <h2>Events</h2>
+            <pre style={{backgroundColor: '#f0f0f0', padding: '10px'}}>
+                {events.map((event) => JSON.stringify(event)).join('\n')}
+            </pre>
         </div>
     );
 }
