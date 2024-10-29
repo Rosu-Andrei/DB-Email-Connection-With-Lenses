@@ -4,7 +4,7 @@ import { Event } from '../events/events'
 import { eventProcessor } from '../events/event.processors';
 import { AppState } from '../App';
 import debounce from 'lodash.debounce';
-import { loadEventsFromGitHub, saveEventsToGitHub } from '../utils/github';
+import {useEventStore} from "../events/EventStore";
 
 type StateProviderProps = {
     initialState: AppState;
@@ -16,24 +16,15 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
     const [events, setEvents] = React.useState<Event[]>([]);
     const [eventFileSha, setEventFileSha] = React.useState<string | null>(null);
 
-    const githubToken = process.env.REACT_APP_GITHUB_TOKEN;
-    const owner = process.env.REACT_APP_GITHUB_OWNER;
-    const repo = process.env.REACT_APP_GITHUB_REPOSITORY;
-    const path = process.env.REACT_APP_GITHUB_PATH;
+    const eventStore = useEventStore();
 
-    //This hook runs the loadEvents function when the githubToken changes. If the token is present, it will load events from GitHub.
     useEffect(() => {
-        if (githubToken) {
-            loadEvents();
-        }
-    }, [githubToken]);
+      loadEvents()
+    }, []);
 
     const loadEvents = async () => {
         try {
-            const { content, sha } = await loadEventsFromGitHub(owner!, repo!, path!, githubToken!);
-            const eventLines = content.split('\n').filter((line) => line.trim() !== '');
-            const loadedEvents = eventLines.map((line) => JSON.parse(line));
-
+            const { events: loadedEvents, sha } = await eventStore.getEvents();
             // Update events state
             setEvents(loadedEvents);
             setEventFileSha(sha);
@@ -42,19 +33,16 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
             const newState = eventProcessor(loadedEvents, initialState) as AppState;
             setState(newState);
         } catch (error) {
-            console.error('Failed to load events from GitHub:', error);
+            console.error('Failed to load events:', error);
         }
     };
 
-    // Debounced function to save events to GitHub
     const debouncedSaveEvents = React.useRef(
         debounce(async (eventsToSave: Event[], sha: string | null) => {
             try {
-                const content = eventsToSave.map((event) => JSON.stringify(event)).join('\n');
-                const data = await saveEventsToGitHub(owner!, repo!, path!, content, sha, githubToken!);
-                setEventFileSha(data.content.sha); //because every time we'll make a change, we will have a new sha
+                await eventStore.saveEvents(eventsToSave, sha);
             } catch (error) {
-                console.error('Failed to save events to GitHub:', error);
+                console.error('Failed to save events:', error);
             }
         }, 5000)
     ).current;

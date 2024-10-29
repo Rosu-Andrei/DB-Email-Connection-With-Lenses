@@ -30,7 +30,7 @@ export const renderStringInput: FieldRenderer = <T,>(
     { id, value, onChange, path}: fieldInputs<T>
 ) => {
     const {state, handleEvent} = useStateOps<T>()
-    const lens = lensFromPath<T>(appendPath(path, id as string))
+    const lens = lensFromPath<T>(path)
     let initialState = lens.get(state);
     const [text, setText] = React.useState(initialState);
     return (
@@ -63,7 +63,7 @@ export const renderNumberInput: FieldRenderer = <T,>(
 ) => {
     const { id, value, onChange, path } = fieldInputs;
     const {state, handleEvent} = useStateOps<T>()
-    const lens = lensFromPath<T>(appendPath(path, id as string))
+    const lens = lensFromPath<T>(path)
     let initialState = lens.get(state);
     const [text, setText] = React.useState(initialState);
     return (
@@ -97,7 +97,7 @@ export const renderPasswordInput: FieldRenderer = <T,>(
 ) => {
     const { id, value, onChange, path } = fieldInputs;
     const {state, handleEvent} = useStateOps<T>()
-    const lens = lensFromPath<T>(appendPath(path, id as string))
+    const lens = lensFromPath<T>(path)
     let initialState = lens.get(state);
     const [text, setText] = React.useState(initialState);
     return (
@@ -134,8 +134,7 @@ export const renderDropDown = (options: string[]): FieldRenderer => <T, >(
             id={id as string}
             name={id as string}
             value={value[id] as string}
-            onChange={onChange}
-        >
+            onChange={onChange}>
             <option value="">Select value</option>
             {options.map((option, index) => (
                 <option key={index} value={option}>

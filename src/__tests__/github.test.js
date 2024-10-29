@@ -1,4 +1,4 @@
-import { saveEventsToGitHub, owner, path, repo } from '../utils/github'; // Adjust the import path as necessary
+import { saveEventsToGitHub, owner, path, repo } from '../utils/github';
 
 describe('Optimistic Locking Tests', () => {
     const mockFetch = jest.fn();
