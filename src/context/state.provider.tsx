@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import { StateContext } from './state.context';
 import { Event } from '../events/events'
-import { eventProcessor } from '../events/event.processors';
+import { eventProcessor } from '../events/events.processors';
 import { AppState } from '../App';
 import debounce from 'lodash.debounce';
-import {useEventStore} from "../events/EventStore";
+import {useEventStore} from "../events/event.store";
 
 type StateProviderProps = {
     initialState: AppState;

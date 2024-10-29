@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { LensWithPath, LensBuilder } from '../utils/lens';
 import { dbDef, ConnectionDef, emailDef } from '../utils/component.prop';
-import { FormWithArray } from './FormWithArray';
+import { FormWithArray } from './form.with.array';
 import { SetValueEvent } from '../events/events';
 import { useStateOps } from '../context/state.context';
 import { buildPath } from "../utils/utils";

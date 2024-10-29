@@ -7,7 +7,7 @@
 
         /**
          * we don't use here the useState hook because we need to pass the formData and setFormData as params,
-         * and we do it from the NameForm or AddressForm or ce altceva mai avem
+         * and we do it from the Form
          */
 
         const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {

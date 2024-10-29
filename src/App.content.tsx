@@ -2,7 +2,7 @@ import {useStateOps} from "./context/state.context";
 import {AppendValueEvent, RemoveConnectionEvent} from "./events/events";
 import {dbDef} from "./utils/component.prop";
 import {lensBuilder} from "./utils/lens";
-import {ConnectionComponent} from "./component/ConnectionComponent";
+import {ConnectionComponent} from "./component/connection.component";
 import {AppState} from "./App";
 
 export function AppContent() {

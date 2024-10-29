@@ -1,4 +1,4 @@
-import { EventStoreInterface } from './EventStore';
+import { EventStoreInterface } from './event.store';
 import { Event } from './events';
 import { loadEventsFromGitHub, saveEventsToGitHub } from '../utils/github';
 

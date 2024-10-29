@@ -1,7 +1,7 @@
 import React from "react";
-import {ObjectDef, renderGenericObject} from "../RenderObject";
+import {ObjectDef, renderGenericObject} from "../render.object";
 import {useStateOps} from "../../context/state.context";
-import {appendPath, lensFromPath} from "../../utils/lens";
+import {lensFromPath} from "../../utils/lens";
 
 
 /**
@@ -27,9 +27,9 @@ export type FieldRenderer = <T>(fieldInputs: fieldInputs<T>) => JSX.Element
  * an implementation of FieldRenderer that renders a text input
  */
 export const renderStringInput: FieldRenderer = <T,>(
-    { id, value, onChange, path}: fieldInputs<T>
+    { id, onChange, path }: fieldInputs<T>
 ) => {
-    const {state, handleEvent} = useStateOps<T>()
+    const { state } = useStateOps<T>()
     const lens = lensFromPath<T>(path)
     let initialState = lens.get(state);
     const [text, setText] = React.useState(initialState);
@@ -61,8 +61,8 @@ export const renderStringInput: FieldRenderer = <T,>(
 export const renderNumberInput: FieldRenderer = <T,>(
     fieldInputs: fieldInputs<T>
 ) => {
-    const { id, value, onChange, path } = fieldInputs;
-    const {state, handleEvent} = useStateOps<T>()
+    const { id, onChange, path } = fieldInputs;
+    const { state } = useStateOps<T>()
     const lens = lensFromPath<T>(path)
     let initialState = lens.get(state);
     const [text, setText] = React.useState(initialState);
@@ -95,8 +95,8 @@ export const renderNumberInput: FieldRenderer = <T,>(
 export const renderPasswordInput: FieldRenderer = <T,>(
     fieldInputs: fieldInputs<T>
 ) => {
-    const { id, value, onChange, path } = fieldInputs;
-    const {state, handleEvent} = useStateOps<T>()
+    const { id, onChange, path } = fieldInputs;
+    const { state } = useStateOps<T>()
     const lens = lensFromPath<T>(path)
     let initialState = lens.get(state);
     const [text, setText] = React.useState(initialState);
@@ -128,7 +128,7 @@ export const renderPasswordInput: FieldRenderer = <T,>(
 export const renderDropDown = (options: string[]): FieldRenderer => <T, >(
     fieldInputs: fieldInputs<T>
 ) => {
-    const {id, value, onChange} = fieldInputs
+    const { id, value, onChange } = fieldInputs
     return (
         <select
             id={id as string}

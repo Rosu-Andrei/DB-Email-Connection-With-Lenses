@@ -13,10 +13,6 @@ export function identityLens<Main>(): LensWithPath<Main, Main> {
     }
 }
 
-export function appendPath(path: string|undefined, id: string){
-    return (path?`${path}.${id}`:id)
-}
-
 /**
  * Parses a string path and returns a lens focused on that property.
  */

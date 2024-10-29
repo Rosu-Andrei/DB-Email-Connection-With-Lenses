@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import {StateProvider} from "./context/state.provider";
 import {AppContent} from "./App.content";
-import {EventStoreProvider} from "./events/EventStore";
+import {EventStoreProvider} from "./events/event.store";
 import {eventStoreUsingGithub} from "./events/github.event.store";
 
 export type AppState = {
