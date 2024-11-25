@@ -12,6 +12,7 @@ export const eventStoreUsingEFS: EventStoreInterface = {
         if (!response.ok) {
             throw new Error(`Failed to load events: ${response.statusText}`);
         }
+
         const data = await response.json();
         return { events: data.events, sha: data.version };
     },
@@ -30,5 +31,5 @@ export const eventStoreUsingEFS: EventStoreInterface = {
         }
         const data = await response.json();
         sha = data.version;
-    },
+    }
 };
