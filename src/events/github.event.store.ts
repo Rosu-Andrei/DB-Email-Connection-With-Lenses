@@ -1,21 +1,29 @@
 import { EventStoreInterface } from './event.store';
 import { Event } from './events';
 import { loadEventsFromGitHub, saveEventsToGitHub } from '../utils/github';
+ import { EventNamespaceDescription } from '../namespace/events.namespace.description';
 
 const githubToken = process.env.REACT_APP_GITHUB_TOKEN!;
-const owner = process.env.REACT_APP_GITHUB_OWNER!;
-const repo = process.env.REACT_APP_GITHUB_REPOSITORY!;
-const path = process.env.REACT_APP_GITHUB_PATH!;
+const org = process.env.REACT_APP_GITHUB_OWNER!;
+const namespace = process.env.REACT_APP_GITHUB_REPOSITORY!;
+const name = process.env.REACT_APP_GITHUB_NAME!;
+
 
 export const eventStoreUsingGithub: EventStoreInterface = {
     getEvents: async () => {
-        const { content, sha } = await loadEventsFromGitHub(owner, repo, path, githubToken);
-        const eventLines = content.split('\n').filter((line) => line.trim() !== '');
-        const events = eventLines.map((line) => JSON.parse(line) as Event);
+        const path = EventNamespaceDescription.path(org, namespace, name);
+
+        const { content, sha } = await loadEventsFromGitHub(path, githubToken);
+        const byteArray = new TextEncoder().encode(content);
+        const events = EventNamespaceDescription.parser(byteArray);
+
         return { events, sha };
     },
     saveEvents: async (events: Event[], sha: string | null) => {
-        const content = events.map((event) => JSON.stringify(event)).join('\n');
-        await saveEventsToGitHub(owner, repo, path, content, sha, githubToken);
+        const path = EventNamespaceDescription.path(org, namespace, name);
+
+        const byteArray = EventNamespaceDescription.writer(events);
+        const content =  new TextDecoder().decode(byteArray);
+        await saveEventsToGitHub(path, content, sha, githubToken);
     },
 };

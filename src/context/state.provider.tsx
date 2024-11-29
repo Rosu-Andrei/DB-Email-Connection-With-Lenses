@@ -26,7 +26,7 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
         try {
             const { events: loadedEvents, sha } = await eventStore.getEvents();
             // Update events state
-            setEvents(loadedEvents);
+            setEvents(Array.isArray(loadedEvents) ? loadedEvents : []);
             setEventFileSha(sha);
 
             // Process loaded events to reconstruct state
@@ -53,7 +53,8 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
         setState(newState);
 
         setEvents((prevEvents) => {
-            const updatedEvents = [...prevEvents, event];
+            const safePrevEvents = Array.isArray(prevEvents) ? prevEvents : [];
+            const updatedEvents = [...safePrevEvents, event];
             debouncedSaveEvents(updatedEvents, eventFileSha);
             return updatedEvents;
         });

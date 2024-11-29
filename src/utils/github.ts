@@ -1,10 +1,8 @@
 export async function loadEventsFromGitHub(
-    owner: string,
-    repo: string,
     path: string,
     token: string
 ) {
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    const url = `https://api.github.com/repos/${path}`;
     const response = await fetch(url, {
         headers: {
             Authorization: `token ${token}`,
@@ -14,7 +12,7 @@ export async function loadEventsFromGitHub(
 
     if (response.ok) {
         const data = await response.json();
-        const content = atob(data.content);
+        const content = atob(data.content).trim();
         return {
             content,
             sha: data.sha, // Needed for updating the file
@@ -32,16 +30,15 @@ export async function loadEventsFromGitHub(
 
 
 export async function saveEventsToGitHub(
-    owner: string,
-    repo: string,
     path: string,
     content: string,
     sha: string | null,
     token: string
 ) {
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    const url = `https://api.github.com/repos/${path}`;
     const message = 'Update events';
-    const base64Content = btoa(content);
+    const base64Content = btoa(unescape(encodeURIComponent(content)));
+    console.log('GitHub Path:', path);
 
     const body: any = {
         message,
