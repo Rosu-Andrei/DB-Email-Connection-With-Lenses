@@ -25,6 +25,10 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
     const loadEvents = async () => {
         try {
             const { events: loadedEvents, sha } = await eventStore.getEvents();
+
+            // Log the loaded events
+            console.log("Loaded Events:", loadedEvents);
+
             // Update events state
             setEvents(Array.isArray(loadedEvents) ? loadedEvents : []);
             setEventFileSha(sha);

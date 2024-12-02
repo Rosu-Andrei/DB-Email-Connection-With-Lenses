@@ -39,6 +39,7 @@ export function oneProcessor<T>(start: Partial<T>, e: Event): Partial<T> {
 }
 
 export function eventProcessor<T>(events: Event[], start: Partial<T>): Partial<T> {
+    console.log("Events for processing:", events);
     return events.reduce((acc, e) => oneProcessor(acc, e), start)
 }
 

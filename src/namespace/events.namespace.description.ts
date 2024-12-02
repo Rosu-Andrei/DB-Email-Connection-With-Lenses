@@ -18,4 +18,8 @@ export const EventNamespaceDescription: NameSpaceDescription<Event[]> = {
     },
 
     contentType: 'application/json',
+
+    allowAppend: true,
+
+    allowOffset: true,
 };
