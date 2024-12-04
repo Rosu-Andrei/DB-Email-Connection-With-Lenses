@@ -1,4 +1,3 @@
-import { loadEventsFromGitHub, saveEventsToGitHub } from '../utils/github';
 import {Loader, Saver} from "./loader-saver";
 
 export const githubLoader: Loader = async (path: string) => {
@@ -19,8 +18,8 @@ export const githubLoader: Loader = async (path: string) => {
     const byteArray = new TextEncoder().encode(content); // Convert content to Uint8Array
 
     return {
-        byteArray, // Return the byteArray
-        sha: data.sha || null, // Extract and return the sha
+        byteArray,
+        sha: data.sha || null,
     };
 };
 

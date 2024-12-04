@@ -5,7 +5,7 @@ export const EventNamespaceDescription: NameSpaceDescription<Event[]> = {
     path: (org, namespace, name) => `${org}/${namespace}/${name}`,
 
     writer: (data) => {
-        const json = JSON.stringify(data);
+        const json = JSON.stringify(data, null, 2);
         return new TextEncoder().encode(json);
     },
 

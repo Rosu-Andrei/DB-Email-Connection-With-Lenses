@@ -10,7 +10,7 @@ import { EventNamespaceDescription } from "../namespace/events.namespace.descrip
 export const efsLoader: Loader = async (path: string) => {
     const response = await fetch(`${path}`, {
         method: "GET",
-        headers: { "Content-Type": EventNamespaceDescription.contentType },
+        headers: { "Accept": "application/octet-stream"}
     });
 
     if (!response.ok) {
@@ -30,7 +30,7 @@ export const efsSaver: Saver = async (path: string, bytes: Uint8Array) => {
     const response = await fetch(`${path}`, {
         method: 'POST',
         headers: {
-            'Content-Type': EventNamespaceDescription.contentType,
+            'Content-Type': 'application/octet-stream',
         },
         body: bytes,
     });

@@ -14,7 +14,7 @@ function App() {
     const initialState: AppState = { connections: [] };
 
     return (
-        <EventStoreProvider eventStore={eventStoreUsingEFS}>
+        <EventStoreProvider eventStore={eventStoreUsingGithub}>
             <StateProvider initialState={initialState}>
                 <AppContent />
             </StateProvider>

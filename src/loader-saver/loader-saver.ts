@@ -28,8 +28,8 @@ export async function load<T>(
     // Parse the sliced data using the namespace description
     return {
         data: desc.parser(slicedData),
-        offset: slicedData.length, // Total length of the byte array
-        sha, // Include the sha from the loader
+        offset: slicedData.length,
+        sha,
     };
 }
 
@@ -60,13 +60,13 @@ export async function save<T>(
     }
 
     if (append) {
-        const existingData = await loader!(path); // Append requires loader
+        const existingData = await loader!(path);
         const updatedData = new Uint8Array(existingData.byteArray.length + byteArray.length);
         updatedData.set(existingData.byteArray, 0);
         updatedData.set(byteArray, existingData.byteArray.length);
 
         await saver(path, updatedData);
     } else {
-        await saver(path, byteArray, sha); // Pass sha to saver
+        await saver(path, byteArray, sha);
     }
 }
