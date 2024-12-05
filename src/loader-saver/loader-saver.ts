@@ -27,8 +27,8 @@ export async function load<T>(
 
     // Parse the sliced data using the namespace description
     return {
-        data: desc.parser(slicedData),
-        offset: slicedData.length, // Total length of the byte array
+        data: desc.parser(byteArray, offset),
+        offset: byteArray.length, // Total length of the byte array
         sha, // Include the sha from the loader
     };
 }

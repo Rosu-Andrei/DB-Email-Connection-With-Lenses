@@ -2164,6 +2164,11 @@
   dependencies:
     "@types/jest" "*"
 
+"@types/text-encoding@^0.0.40":
+  version "0.0.40"
+  resolved "https://registry.yarnpkg.com/@types/text-encoding/-/text-encoding-0.0.40.tgz#3a9d6ec2ae6697fcee8965de4304d9513c0dbb4f"
+  integrity sha512-dHzoIdwBfY7jcSTTt6XBkaeiuFQAQD7r/7aJySKDdHkYBCDOvs9jPVt4NYXuwBMn89PP6gSd29WubIS19wTiXg==
+
 "@types/trusted-types@^2.0.2":
   version "2.0.7"
   resolved "https://registry.npmjs.org/@types/trusted-types/-/trusted-types-2.0.7.tgz"
@@ -5279,7 +5284,7 @@ ipaddr.js@^2.0.1:
   resolved "https://registry.npmjs.org/ipaddr.js/-/ipaddr.js-2.2.0.tgz"
   integrity sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==
 
-is-arguments@^1.1.1:
+is-arguments@^1.0.4, is-arguments@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/is-arguments/-/is-arguments-1.1.1.tgz"
   integrity sha512-8Q7EARjzEnKpt/PCD7e1cgUS0a6X8u5tdSiMqXhojOdoV9TsMsiO+9VLC5vAmO8N7/GmXn7yjR8qnA6bVAEzfA==
@@ -5382,7 +5387,7 @@ is-generator-fn@^2.0.0:
   resolved "https://registry.npmjs.org/is-generator-fn/-/is-generator-fn-2.1.0.tgz"
   integrity sha512-cTIB4yPYL/Grw0EaSzASzg6bBy9gqCofvWN8okThAYIxKJZC+udlRAmGbM0XLeniEJSs8uEgHPGuHSe1XsOLSQ==
 
-is-generator-function@^1.0.10:
+is-generator-function@^1.0.10, is-generator-function@^1.0.7:
   version "1.0.10"
   resolved "https://registry.npmjs.org/is-generator-function/-/is-generator-function-1.0.10.tgz"
   integrity sha512-jsEjy9l3yiXEQ+PsXdmBwEPcOxaXWLspKdplFUVI9vq1iZgIekeC0L167qeu86czQaxed3q/Uzuw0swL0irL8A==
@@ -5496,7 +5501,7 @@ is-symbol@^1.0.3, is-symbol@^1.0.4:
   dependencies:
     has-symbols "^1.0.2"
 
-is-typed-array@^1.1.13:
+is-typed-array@^1.1.13, is-typed-array@^1.1.3:
   version "1.1.13"
   resolved "https://registry.npmjs.org/is-typed-array/-/is-typed-array-1.1.13.tgz"
   integrity sha512-uZ25/bUAlUY5fR4OKT4rZQEBrzQWYV9ZJYGGsUmEJ6thodVJ1HX64ePQ6Z0qPWP+m+Uq6e9UugrE38jeYsDSMw==
@@ -8911,6 +8916,11 @@ test-exclude@^6.0.0:
     glob "^7.1.4"
     minimatch "^3.0.4"
 
+text-encoding@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.7.0.tgz#f895e836e45990624086601798ea98e8f36ee643"
+  integrity sha512-oJQ3f1hrOnbRLOcwKz0Liq2IcrvDeZRHXhd9RgLrsT+DjWY/nty1Hi7v3dtkaEYbPYe0mUoOfzRrMwfXXwgPUA==
+
 text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.npmjs.org/text-table/-/text-table-0.2.0.tgz"
@@ -9225,6 +9235,17 @@ util.promisify@~1.0.0:
     has-symbols "^1.0.1"
     object.getownpropertydescriptors "^2.1.0"
 
+util@^0.12.5:
+  version "0.12.5"
+  resolved "https://registry.yarnpkg.com/util/-/util-0.12.5.tgz#5f17a6059b73db61a875668781a1c2b136bd6fbc"
+  integrity sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==
+  dependencies:
+    inherits "^2.0.3"
+    is-arguments "^1.0.4"
+    is-generator-function "^1.0.7"
+    is-typed-array "^1.1.3"
+    which-typed-array "^1.1.2"
+
 utila@~0.4:
   version "0.4.0"
   resolved "https://registry.npmjs.org/utila/-/utila-0.4.0.tgz"
@@ -9504,7 +9525,7 @@ which-collection@^1.0.1, which-collection@^1.0.2:
     is-weakmap "^2.0.2"
     is-weakset "^2.0.3"
 
-which-typed-array@^1.1.13, which-typed-array@^1.1.14, which-typed-array@^1.1.15:
+which-typed-array@^1.1.13, which-typed-array@^1.1.14, which-typed-array@^1.1.15, which-typed-array@^1.1.2:
   version "1.1.16"
   resolved "https://registry.npmjs.org/which-typed-array/-/which-typed-array-1.1.16.tgz"
   integrity sha512-g+N+GAWiRj66DngFwHvISJd+ITsyphZvD1vChfVg6cEdnzy53GzB3oy0fUNlvhz7H7+MiqhYr26qxQShCpKTTQ==
