@@ -35,11 +35,14 @@ const RAW_RUNTIME_STATE =
           ["@types/node", "npm:16.18.115"],\
           ["@types/react", "npm:18.3.12"],\
           ["@types/react-dom", "npm:18.3.1"],\
+          ["@types/text-encoding", "npm:0.0.40"],\
           ["lodash.debounce", "npm:4.0.8"],\
           ["react", "npm:18.3.1"],\
           ["react-dom", "virtual:e71036cd8e236515521205d8686aefbb8cd2913da7178f242b2e6055634c9fbc52b66ed5904aa9d278d9a4db9a012d001d4372e60912c1f3da3de753b20df0e6#npm:18.3.1"],\
           ["react-scripts", "virtual:e71036cd8e236515521205d8686aefbb8cd2913da7178f242b2e6055634c9fbc52b66ed5904aa9d278d9a4db9a012d001d4372e60912c1f3da3de753b20df0e6#npm:5.0.1"],\
+          ["text-encoding", "npm:0.7.0"],\
           ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"],\
+          ["util", "npm:0.12.5"],\
           ["web-vitals", "npm:2.1.4"]\
         ],\
         "linkType": "SOFT"\
@@ -5062,6 +5065,15 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@types/testing-library__jest-dom", "npm:5.14.9"],\
           ["@types/jest", "npm:29.5.14"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@types/text-encoding", [\
+      ["npm:0.0.40", {\
+        "packageLocation": "../../../../C:/Users/ivona/AppData/Local/Yarn/Berry/cache/@types-text-encoding-npm-0.0.40-bdc93ec809-10c0.zip/node_modules/@types/text-encoding/",\
+        "packageDependencies": [\
+          ["@types/text-encoding", "npm:0.0.40"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -10962,11 +10974,14 @@ const RAW_RUNTIME_STATE =
           ["@types/node", "npm:16.18.115"],\
           ["@types/react", "npm:18.3.12"],\
           ["@types/react-dom", "npm:18.3.1"],\
+          ["@types/text-encoding", "npm:0.0.40"],\
           ["lodash.debounce", "npm:4.0.8"],\
           ["react", "npm:18.3.1"],\
           ["react-dom", "virtual:e71036cd8e236515521205d8686aefbb8cd2913da7178f242b2e6055634c9fbc52b66ed5904aa9d278d9a4db9a012d001d4372e60912c1f3da3de753b20df0e6#npm:18.3.1"],\
           ["react-scripts", "virtual:e71036cd8e236515521205d8686aefbb8cd2913da7178f242b2e6055634c9fbc52b66ed5904aa9d278d9a4db9a012d001d4372e60912c1f3da3de753b20df0e6#npm:5.0.1"],\
+          ["text-encoding", "npm:0.7.0"],\
           ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"],\
+          ["util", "npm:0.12.5"],\
           ["web-vitals", "npm:2.1.4"]\
         ],\
         "linkType": "SOFT"\
@@ -17051,6 +17066,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["text-encoding", [\
+      ["npm:0.7.0", {\
+        "packageLocation": "../../../../C:/Users/ivona/AppData/Local/Yarn/Berry/cache/text-encoding-npm-0.7.0-ff0c4af052-10c0.zip/node_modules/text-encoding/",\
+        "packageDependencies": [\
+          ["text-encoding", "npm:0.7.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["text-table", [\
       ["npm:0.2.0", {\
         "packageLocation": "../../../../C:/Users/ivona/AppData/Local/Yarn/Berry/cache/text-table-npm-0.2.0-d92a778b59-10c0.zip/node_modules/text-table/",\
@@ -17564,6 +17588,20 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["util", [\
+      ["npm:0.12.5", {\
+        "packageLocation": "../../../../C:/Users/ivona/AppData/Local/Yarn/Berry/cache/util-npm-0.12.5-3668276f26-10c0.zip/node_modules/util/",\
+        "packageDependencies": [\
+          ["util", "npm:0.12.5"],\
+          ["inherits", "npm:2.0.4"],\
+          ["is-arguments", "npm:1.1.1"],\
+          ["is-generator-function", "npm:1.0.10"],\
+          ["is-typed-array", "npm:1.1.13"],\
+          ["which-typed-array", "npm:1.1.16"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["util-deprecate", [\
       ["npm:1.0.2", {\
         "packageLocation": "../../../../C:/Users/ivona/AppData/Local/Yarn/Berry/cache/util-deprecate-npm-1.0.2-e3fe1a219c-10c0.zip/node_modules/util-deprecate/",\
@@ -18046,6 +18084,18 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../../../C:/Users/ivona/AppData/Local/Yarn/Berry/cache/which-typed-array-npm-1.1.15-91410874a2-10c0.zip/node_modules/which-typed-array/",\
         "packageDependencies": [\
           ["which-typed-array", "npm:1.1.15"],\
+          ["available-typed-arrays", "npm:1.0.7"],\
+          ["call-bind", "npm:1.0.7"],\
+          ["for-each", "npm:0.3.3"],\
+          ["gopd", "npm:1.0.1"],\
+          ["has-tostringtag", "npm:1.0.2"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:1.1.16", {\
+        "packageLocation": "../../../../C:/Users/ivona/AppData/Local/Yarn/Berry/cache/which-typed-array-npm-1.1.16-88e900c4ff-10c0.zip/node_modules/which-typed-array/",\
+        "packageDependencies": [\
+          ["which-typed-array", "npm:1.1.16"],\
           ["available-typed-arrays", "npm:1.0.7"],\
           ["call-bind", "npm:1.0.7"],\
           ["for-each", "npm:0.3.3"],\

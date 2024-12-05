@@ -4,7 +4,7 @@ export type NameSpaceDescription<T> = {
     // Serializes the object into bytes for storage
     writer: (data: T) => Uint8Array;
     // Parses bytes back into the object
-    parser: (data: Uint8Array) => T;
+    parser: (data: Uint8Array, offset: number) => T;
     contentType: string
     allowAppend: boolean;
     allowOffset: boolean;

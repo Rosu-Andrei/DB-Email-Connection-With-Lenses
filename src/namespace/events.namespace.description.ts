@@ -1,5 +1,6 @@
 import { NameSpaceDescription } from './namespace.description';
 import { Event } from '../events/events';
+import { TextEncoder, TextDecoder } from 'text-encoding';
 
 export const EventNamespaceDescription: NameSpaceDescription<Event[]> = {
     path: (org, namespace, name) => `${org}/${namespace}/${name}`,
@@ -9,12 +10,17 @@ export const EventNamespaceDescription: NameSpaceDescription<Event[]> = {
         return new TextEncoder().encode(json);
     },
 
-    parser: (data) => {
+    parser: (data: Uint8Array, offset = 0) => {
         const json = new TextDecoder().decode(data).trim();
         if (!json) {
             return [];
         }
-        return JSON.parse(json) as Event[];
+
+        // Parse the JSON string into an array
+        const parsedArray = JSON.parse(json) as Event[];
+
+        // Apply offset to the parsed array
+        return parsedArray.slice(offset);
     },
 
     contentType: 'application/json',
