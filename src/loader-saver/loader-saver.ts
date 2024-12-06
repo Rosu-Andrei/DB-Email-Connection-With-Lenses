@@ -23,8 +23,10 @@ export async function load<T>(
     const { byteArray, sha } = await loader(path);
 
     // Parse the sliced data using the namespace description
+    const parsedData = desc.parser(byteArray, offset);
+
     return {
-        data: desc.parser(byteArray, offset),
+        data: parsedData,
         offset: byteArray.length,
         sha,
     };

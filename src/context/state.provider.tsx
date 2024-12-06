@@ -24,22 +24,20 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
 
     const loadEvents = async () => {
         try {
-            const { events: loadedEvents, sha } = await eventStore.getEvents();
+            const interpreter = 'asJson'; // Specify the interpreter
+            const { events: processedState, sha } = await eventStore.getEvents<AppState>(0, interpreter);
 
-            // Log the loaded events
-            console.log("Loaded Events:", loadedEvents);
+            console.log("Processed State (asJson):", processedState);
 
-            // Update events state
-            setEvents(Array.isArray(loadedEvents) ? loadedEvents : []);
+            setState(processedState); // No type error because processedState is AppState
+            setEvents(await eventStore.getEvents<Event[]>(0).then(res => res.events));
             setEventFileSha(sha);
-
-            // Process loaded events to reconstruct state
-            const newState = eventProcessor(loadedEvents, initialState) as AppState;
-            setState(newState);
         } catch (error) {
             console.error('Failed to load events:', error);
         }
     };
+
+
 
     const debouncedSaveEvents = React.useRef(
         debounce(async (eventsToSave: Event[], sha: string | null) => {
