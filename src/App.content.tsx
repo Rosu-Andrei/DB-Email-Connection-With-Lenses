@@ -38,10 +38,6 @@ export function AppContent() {
 
         handleEvent(event);
     };
-
-    const changeInterpreter = (newInterpreter: string) => {
-        handleInterpreterChange(newInterpreter);
-    }
     
     return (
         <div className="App">
@@ -49,24 +45,31 @@ export function AppContent() {
                 +
             </button>
 
-            {/* Render connections only if the state.connections array has items */}
-            {state.connections.length > 0 ? (
-                state.connections.map((connection, index) => {
-                    const connectionLens = lensBuilder<AppState>()
-                        .focuson('connections')
-                        .focuson(index) // Use index for array
-                        .build();
+            {/* Interpretor Selector */}
+            <div>
+                <label htmlFor="interpreter-select">Interpreter: </label>
+                <select
+                    id="interpreter-select"
+                    value={interpreter}
+                    onChange={(e) => handleInterpreterChange(e.target.value)}
+                    >
+                        <option value ="asJson">JSON</option>
+                        <option value ="count">count</option>
+                    </select>
+            </div>
 
-                    return (
-                        <ConnectionComponent
+
+            {/* Connections */}
+            {state.connections.length > 0 ? (
+                state.connections.map((connection, index) => (
+                    <ConnectionComponent
                             key={index}
                             index={index}
                             id={connection.id}
-                            lens={connectionLens}
+                            lens={lensBuilder<AppState>().focuson('connections').focuson(index).build()}
                             removeConnection={removeConnection}
                         />
-                    );
-                })
+                ))
             ) : (
                 <p>No connections available</p>
             )}
