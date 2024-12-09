@@ -38,53 +38,54 @@ export function AppContent() {
 
         handleEvent(event);
     };
-
-    const changeInterpreter = (newInterpreter: string) => {
-        handleInterpreterChange(newInterpreter);
-    };
-
+    
     return (
         <div className="App">
+            {/* Add Connection Button */}
             <button onClick={addConnection} style={{ position: 'absolute', top: 10, right: 10 }}>
                 +
             </button>
 
-            {/* Render connections only if the state.connections array has items */}
-            {state.connections.length > 0 ? (
-                state.connections.map((connection, index) => {
-                    const connectionLens = lensBuilder<AppState>()
-                        .focuson('connections')
-                        .focuson(index) // Use index for array
-                        .build();
+            {/* Interpreter Selector */}
+            <div>
+                <label htmlFor="interpreter-select">Interpreter: </label>
+                <select
+                    id="interpreter-select"
+                    value={interpreter}
+                    onChange={(e) => handleInterpreterChange(e.target.value)}
+                >
+                    <option value="asJson">JSON</option>
+                    <option value="count">Count</option>
+                </select>
+            </div>
 
-                    return (
-                        <ConnectionComponent
-                            key={index}
-                            index={index}
-                            id={connection.id}
-                            lens={connectionLens}
-                            removeConnection={removeConnection}
-                        />
-                    );
-                })
+            {/* Connections */}
+            {state.connections.length > 0 ? (
+                state.connections.map((connection, index) => (
+                    <ConnectionComponent
+                        key={index}
+                        index={index}
+                        id={connection.id}
+                        lens={lensBuilder<AppState>().focuson('connections').focuson(index).build()}
+                        removeConnection={removeConnection}
+                    />
+                ))
             ) : (
                 <p>No connections available</p>
             )}
-            {/* Display the Result */}
+
+            {/* Result */}
             <h2>Result</h2>
-            {result !== null && <p>{`Result: ${result}`}</p>}
+            <pre style={{ backgroundColor: '#f0f0f0', padding: '10px' }}>{result}</pre>
 
-            {/* Displaying the state in JSON format */}
-            <pre>{JSON.stringify(state, null, 2)}</pre>
-
+            {/* Events */}
             <h2>Events</h2>
-            {/* Render events list if it's not empty */}
             {events.length > 0 ? (
                 <pre style={{ backgroundColor: '#f0f0f0', padding: '10px' }}>
                     {events.map((event, index) => JSON.stringify(event)).join('\n')}
                 </pre>
             ) : (
-                <p>No events available</p>  // Show this if events array is empty
+                <p>No events available</p>
             )}
         </div>
     );

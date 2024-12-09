@@ -5,6 +5,7 @@ import { eventProcessor } from '../events/events.processors';
 import { AppState } from '../App';
 import debounce from 'lodash.debounce';
 import {useEventStore} from "../events/event.store";
+import {allInterpreters} from "../interpreter/interpreter";
 
 type StateProviderProps = {
     initialState: AppState;
@@ -15,7 +16,7 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
     const [state, setState] = React.useState<AppState>(initialState);
     const [events, setEvents] = React.useState<Event[]>([]);
     const [result, setResult] = React.useState<any>(null);
-    const [interpreter, setInterpreter] = React.useState<string>('count'); // Default interpreter
+    const [interpreter, setInterpreter] = React.useState<string>('asJson'); // Default interpreter
     const [eventFileSha, setEventFileSha] = React.useState<string | null>(null);
 
     const eventStore = useEventStore();
@@ -24,27 +25,27 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
       loadEvents(interpreter)
     }, [interpreter]);
 
-        const loadEvents = async (selectedInterpreter: string) => {
-            try {
-                const {events: processedStateOrResult, sha} = await eventStore.getEvents<any>(0, selectedInterpreter);
+    const loadEvents = async (selectedInterpreter: string) => {
+        try {
+            const interpreter = allInterpreters[selectedInterpreter];
+            if (!interpreter) throw new Error(`Interpreter "${selectedInterpreter}" not found`);
 
-                console.log(`Processed with ${selectedInterpreter}:`, processedStateOrResult);
+            const { events: rawEvents, sha } = await eventStore.getEvents<Event[]>(0);
+            const processedResult = await interpreter.process(rawEvents);
 
-                setEvents(await eventStore.getEvents<Event[]>(0).then(res => res.events)); // Raw events
+            setEvents(rawEvents);
+            setResult(interpreter.render(processedResult));
+            setEventFileSha(sha);
 
-                if (selectedInterpreter === 'asJson') {
-                    setState(processedStateOrResult); // Processed AppState
-                    setResult(null); // No special result for asJson
-                } else {
-                    setResult(processedStateOrResult);
-                    setState(initialState); // Reset state since count doesn't apply to AppState
-                }
-
-                setEventFileSha(sha);
-            } catch (error) {
-                console.error('Failed to load events:', error);
+            if (selectedInterpreter === 'asJson') {
+                setState(processedResult as AppState);
+            } else {
+                setState(initialState); // Reset state for non-JSON interpreters
             }
-        };
+        } catch (error) {
+            console.error('Failed to load events:', error);
+        }
+    };
 
     const handleInterpreterChange = (newInterpreter: string) => {
         setInterpreter(newInterpreter);

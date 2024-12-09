@@ -3,7 +3,7 @@ import { Event } from './events';
 import { EventNamespaceDescription } from "../namespace/events.namespace.description";
 import { load, save } from "../loader-saver/loader-saver";
 import { githubLoader, githubSaver } from "../loader-saver/github.loader-saver";
-import {interpreters} from "../interpreter/interpreter";
+import {allInterpreters} from "../interpreter/interpreter";
 
 const org = process.env.REACT_APP_GITHUB_OWNER!;
 const namespace = process.env.REACT_APP_GITHUB_REPOSITORY!;
@@ -13,12 +13,12 @@ export const eventStoreUsingGithub: EventStoreInterface = {
     getEvents: async <T = Event[]>(offset = 0, interpreter?: string) => {
         const loadResult = await load(EventNamespaceDescription, githubLoader, org, namespace, name, offset);
 
-        let processedEvents: T | Event[] = loadResult.data; // Default raw events
+        let processedEvents: T | Event[] = loadResult.data;
         if (interpreter) {
-            if (!(interpreter in interpreters)) {
+            if (!(interpreter in allInterpreters)) {
                 throw new Error(`Interpreter "${interpreter}" not found`);
             }
-            processedEvents = (await interpreters[interpreter](loadResult.data)) as T; // Apply interpreter
+            processedEvents = (await allInterpreters[interpreter].process(loadResult.data)) as T; // Apply interpreter
         }
 
         return {
