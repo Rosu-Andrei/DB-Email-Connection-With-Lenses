@@ -6,7 +6,7 @@ import { ConnectionComponent } from "./component/connection.component";
 import { AppState } from "./App";
 
 export function AppContent() {
-    const { state, handleEvent, events } = useStateOps<AppState>();
+    const { state, handleEvent, events, result, interpreter, handleInterpreterChange } = useStateOps<AppState>();
     console.log("events type:", Array.isArray(events), events);
 
     const addConnection = () => {
@@ -39,6 +39,10 @@ export function AppContent() {
         handleEvent(event);
     };
 
+    const changeInterpreter = (newInterpreter: string) => {
+        handleInterpreterChange(newInterpreter);
+    };
+
     return (
         <div className="App">
             <button onClick={addConnection} style={{ position: 'absolute', top: 10, right: 10 }}>
@@ -66,6 +70,9 @@ export function AppContent() {
             ) : (
                 <p>No connections available</p>
             )}
+            {/* Display the Result */}
+            <h2>Result</h2>
+            {result !== null && <p>{`Result: ${result}`}</p>}
 
             {/* Displaying the state in JSON format */}
             <pre>{JSON.stringify(state, null, 2)}</pre>

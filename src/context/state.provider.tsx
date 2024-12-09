@@ -14,30 +14,41 @@ type StateProviderProps = {
 export function StateProvider({ initialState, children }: StateProviderProps) {
     const [state, setState] = React.useState<AppState>(initialState);
     const [events, setEvents] = React.useState<Event[]>([]);
+    const [result, setResult] = React.useState<any>(null);
+    const [interpreter, setInterpreter] = React.useState<string>('count'); // Default interpreter
     const [eventFileSha, setEventFileSha] = React.useState<string | null>(null);
 
     const eventStore = useEventStore();
 
     useEffect(() => {
-      loadEvents()
-    }, []);
+      loadEvents(interpreter)
+    }, [interpreter]);
 
-    const loadEvents = async () => {
-        try {
-            const interpreter = 'asJson'; // Specify the interpreter
-            const { events: processedState, sha } = await eventStore.getEvents<AppState>(0, interpreter);
+        const loadEvents = async (selectedInterpreter: string) => {
+            try {
+                const {events: processedStateOrResult, sha} = await eventStore.getEvents<any>(0, selectedInterpreter);
 
-            console.log("Processed State (asJson):", processedState);
+                console.log(`Processed with ${selectedInterpreter}:`, processedStateOrResult);
 
-            setState(processedState); // No type error because processedState is AppState
-            setEvents(await eventStore.getEvents<Event[]>(0).then(res => res.events));
-            setEventFileSha(sha);
-        } catch (error) {
-            console.error('Failed to load events:', error);
-        }
+                setEvents(await eventStore.getEvents<Event[]>(0).then(res => res.events)); // Raw events
+
+                if (selectedInterpreter === 'asJson') {
+                    setState(processedStateOrResult); // Processed AppState
+                    setResult(null); // No special result for asJson
+                } else {
+                    setResult(processedStateOrResult);
+                    setState(initialState); // Reset state since count doesn't apply to AppState
+                }
+
+                setEventFileSha(sha);
+            } catch (error) {
+                console.error('Failed to load events:', error);
+            }
+        };
+
+    const handleInterpreterChange = (newInterpreter: string) => {
+        setInterpreter(newInterpreter);
     };
-
-
 
     const debouncedSaveEvents = React.useRef(
         debounce(async (eventsToSave: Event[], sha: string | null) => {
@@ -63,7 +74,7 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
     };
 
     return (
-        <StateContext.Provider value={{ state, handleEvent, events }}>
+        <StateContext.Provider value={{ state, handleEvent, events, result, interpreter, handleInterpreterChange}}>
             {children}
         </StateContext.Provider>
     );
