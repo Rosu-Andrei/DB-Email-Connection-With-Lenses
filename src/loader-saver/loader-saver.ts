@@ -22,14 +22,12 @@ export async function load<T>(
     // Call the loader
     const { byteArray, sha } = await loader(path);
 
-    // Slice the data based on the offset
-    const slicedData = offset > 0 ? byteArray.slice(offset) : byteArray;
+    const parsedData = desc.parser(byteArray, offset);
 
-    // Parse the sliced data using the namespace description
     return {
-        data: desc.parser(byteArray, offset),
-        offset: byteArray.length, // Total length of the byte array
-        sha, // Include the sha from the loader
+        data: parsedData,
+        offset: byteArray.length, 
+        sha, 
     };
 }
 

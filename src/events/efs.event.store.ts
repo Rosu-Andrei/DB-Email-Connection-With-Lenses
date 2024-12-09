@@ -3,17 +3,25 @@ import { Event } from './events';
 import { EventNamespaceDescription } from "../namespace/events.namespace.description";
 import { load, save } from "../loader-saver/loader-saver";
 import { efsLoader, efsSaver } from "../loader-saver/efs.loader-saver";
+import { interpreters } from "../interpreter/interpreter";
 
 const org = process.env.REACT_APP_EFS_ORG!;
 const namespace = process.env.REACT_APP_EFS_NAMESPACE!;
 const name = process.env.REACT_APP_EFS_NAME!;
 
 export const eventStoreUsingEFS: EventStoreInterface = {
-    getEvents: async (offset = 0) => {
+    getEvents: async <T = Event[]>(offset = 0, interpreter?: string) => {
         const loadResult = await load(EventNamespaceDescription, efsLoader, org, namespace, name, offset);
 
+        let processedEvents: T | Event[] = loadResult.data;
+        if (interpreter) {
+            if (!(interpreter in interpreters)) {
+                throw new Error(`Interpreter "${interpreter}" not found`);
+            }
+            processedEvents = (await interpreters[interpreter](loadResult.data)) as T;
+        }
         return {
-            events: loadResult.data,
+            events: processedEvents as T,
             offset: loadResult.offset,
             sha: loadResult.sha
         };

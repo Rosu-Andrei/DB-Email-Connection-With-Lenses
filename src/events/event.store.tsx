@@ -2,7 +2,7 @@ import React from 'react';
 import { Event } from './events';
 
 export interface EventStoreInterface {
-    getEvents: (offset?: number) => Promise<{ events: Event[]; offset: number; sha: string | null }>;
+    getEvents<T = Event[]>(offset?: number, interpreter?: string) : Promise<{ events: T; offset: number; sha: string | null }>;
     saveEvents: (events: Event[], sha: string | null) => Promise<void>;
 }
 

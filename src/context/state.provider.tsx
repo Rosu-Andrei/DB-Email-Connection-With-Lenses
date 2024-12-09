@@ -14,28 +14,32 @@ type StateProviderProps = {
 export function StateProvider({ initialState, children }: StateProviderProps) {
     const [state, setState] = React.useState<AppState>(initialState);
     const [events, setEvents] = React.useState<Event[]>([]);
+    const [ result, setResult ] = React.useState<any>(null);
+    const [interpreter, setInterpreter] = React.useState<string>('count');
     const [eventFileSha, setEventFileSha] = React.useState<string | null>(null);
 
     const eventStore = useEventStore();
 
     useEffect(() => {
-      loadEvents()
-    }, []);
+      loadEvents(interpreter)
+    }, [interpreter]);
 
-    const loadEvents = async () => {
+    const loadEvents = async (selectedInterpreter: string) => {
         try {
-            const { events: loadedEvents, sha } = await eventStore.getEvents();
 
-            // Log the loaded events
-            console.log("Loaded Events:", loadedEvents);
+            const { events: processedStateOrResult, sha } = await eventStore.getEvents<any>(0, selectedInterpreter);
+            console.log(`Processed with ${selectedInterpreter}:`, processedStateOrResult);
 
-            // Update events state
-            setEvents(Array.isArray(loadedEvents) ? loadedEvents : []);
+            setEvents(await eventStore.getEvents<Event[]>(0).then(res => res.events));
+            
+            if (selectedInterpreter === 'asJson') {
+                setState(processedStateOrResult);
+                setResult(null);
+            } else {
+                setResult(processedStateOrResult);
+                setState(initialState);
+            }
             setEventFileSha(sha);
-
-            // Process loaded events to reconstruct state
-            const newState = eventProcessor(loadedEvents, initialState) as AppState;
-            setState(newState);
         } catch (error) {
             console.error('Failed to load events:', error);
         }
@@ -51,6 +55,9 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
         }, 5000)
     ).current;
 
+    const handleInterpreterChange = (newInterpreter: string) => {
+        setInterpreter(newInterpreter);
+    }
 
     const handleEvent = (event: Event) => {
         const newState = eventProcessor([event], state) as AppState;
@@ -65,7 +72,7 @@ export function StateProvider({ initialState, children }: StateProviderProps) {
     };
 
     return (
-        <StateContext.Provider value={{ state, handleEvent, events }}>
+        <StateContext.Provider value={{ state, handleEvent, events, result, interpreter, handleInterpreterChange}}>
             {children}
         </StateContext.Provider>
     );
