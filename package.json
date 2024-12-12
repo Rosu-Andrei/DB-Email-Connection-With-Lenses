@@ -11,12 +11,14 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "lodash.debounce": "^4.0.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
     "text-encoding": "^0.7.0",
-    "typescript": "^4.4.2",
+    "typescript": "^5.7.2",
     "util": "^0.12.5",
     "web-vitals": "^2.1.0"
   },
@@ -41,6 +43,7 @@
   "packageManager": "yarn@1.22.22",
   "devDependencies": {
     "@types/lodash.debounce": "^4",
-    "@types/text-encoding": "^0.0.40"
+    "@types/text-encoding": "^0.0.40",
+    "ts-node": "^10.9.2"
   }
 }
